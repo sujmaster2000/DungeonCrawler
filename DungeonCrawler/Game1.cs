@@ -178,22 +178,22 @@ namespace DungeonCrawler
             
             foreach (Enemy e in GEnemies)
             {
-                if (e.pos.X == player.playerPos.X + 1 && e.pos.Y == player.playerPos.Y && player.OnePressed || player.TwoPressed && !e.hasAttacked)
+                if (e.pos.X == player.playerPos.X + 1 && e.pos.Y == player.playerPos.Y && player.OnePressed || player.TwoPressed || player.ThreePressed && !e.hasAttacked)
                 {
                     e.attack(player);
                     e.hasAttacked = true;
                 }
-                else if (e.pos.X == player.playerPos.X - 1 && e.pos.Y == player.playerPos.Y && player.OnePressed || player.TwoPressed && !e.hasAttacked)
+                else if (e.pos.X == player.playerPos.X - 1 && e.pos.Y == player.playerPos.Y && player.OnePressed || player.TwoPressed || player.ThreePressed && !e.hasAttacked)
                 {
                     e.attack(player);
                     e.hasAttacked = true;
                 }
-                else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y + 1 && player.OnePressed || player.TwoPressed && !e.hasAttacked)
+                else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y + 1 && player.OnePressed || player.TwoPressed || player.ThreePressed && !e.hasAttacked)
                 {
                     e.attack(player);
                     e.hasAttacked = true;
                 }
-                else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y - 1 && player.OnePressed || player.TwoPressed && !e.hasAttacked)
+                else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y - 1 && player.OnePressed || player.TwoPressed || player.ThreePressed && !e.hasAttacked)
                 {
                     e.attack(player);
                     e.hasAttacked = true;

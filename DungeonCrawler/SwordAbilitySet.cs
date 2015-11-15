@@ -186,5 +186,18 @@ namespace DungeonCrawler
             }
             p.TwoPressed = true;
         }
+        public void Skill3(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
+        {
+            game.HasMoved = true;
+
+            foreach (Enemy e in Enemies)
+            {
+                if (e.pos.X < p.playerPos.X + 3 && e.pos.X > p.playerPos.X - 3 && e.pos.Y < p.playerPos.Y + 3 && e.pos.Y > p.playerPos.Y - 3)
+                {
+                    e.health -= p.AttackDamage / 2;
+                }
+            }
+            p.ThreePressed = true;
+        }
     }
 }

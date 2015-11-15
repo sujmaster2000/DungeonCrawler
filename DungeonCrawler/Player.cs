@@ -19,6 +19,7 @@ namespace DungeonCrawler
         bool Wpressed = false;
         public bool OnePressed = false;
         public bool TwoPressed = false;
+        public bool ThreePressed = false;
 
         Item[] Equiped = new Item[4];
 
@@ -143,7 +144,11 @@ namespace DungeonCrawler
 
                 else if (k.IsKeyDown(Keys.D2) && !TwoPressed)
                 {
-                    Equiped[3].SAbilities.Skill1(ref Enemies, this, game, Maze);
+                    Equiped[3].SAbilities.Skill2(ref Enemies, this, game, Maze);
+                }
+                else if (k.IsKeyDown(Keys.D3) && !ThreePressed)
+                {
+                    Equiped[3].SAbilities.Skill3(ref Enemies, this, game, Maze);
                 }
 
                 if (k.IsKeyUp(Keys.D))
@@ -177,6 +182,14 @@ namespace DungeonCrawler
                 if (k.IsKeyUp(Keys.D2))
                 {
                     TwoPressed = false;
+                    foreach (Enemy e in Enemies)
+                    {
+                        e.hasAttacked = false;
+                    }
+                }
+                if (k.IsKeyUp(Keys.D3))
+                {
+                    ThreePressed = false;
                     foreach (Enemy e in Enemies)
                     {
                         e.hasAttacked = false;
