@@ -189,7 +189,7 @@ namespace DungeonCrawler
 
         public void draw(SpriteBatch s, Texture2D t, SpriteFont f, Player p)
         {
-            if (pos.X < p.playerPos.X + 5 && pos.X > p.playerPos.X - 5 && pos.Y < p.playerPos.Y + 5 && pos.Y > p.playerPos.Y - 5)
+            if (pos.X < p.playerPos.X + 5 && pos.X > p.playerPos.X - 5 && pos.Y < p.playerPos.Y + 5 && pos.Y > p.playerPos.Y - 5 && isAlive)
             {
                 s.Draw(t, rect, Color.White);
                 s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);

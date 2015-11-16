@@ -115,10 +115,10 @@ namespace DungeonCrawler
             arial = Content.Load<SpriteFont>("myFont");
             player_texture = Content.Load<Texture2D>("jordeKang.jpg");
             healthPotion = Content.Load<Texture2D>("HealthPotion.png");
-            player = new Player(new Vector2(1, 1), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 20, 10),
-                new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 10, 20),
-                new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 10, 10),
-                new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 5, 40, "sword", new SwordAbilitySet()));
+            player = new Player(new Vector2(1, 1), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4),
+                new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2),
+                new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2),
+                new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet()));
             gui.Buttons.ElementAt(0).LoadContent(Content, "buttonTexture", Convert.ToInt32(player.playerPos.X + 150), Convert.ToInt32(player.playerPos.Y + 150));
 
             attack = Content.Load<SoundEffect>("AttackSound");
@@ -178,22 +178,22 @@ namespace DungeonCrawler
             
             foreach (Enemy e in GEnemies)
             {
-                if (e.pos.X == player.playerPos.X + 1 && e.pos.Y == player.playerPos.Y && player.OnePressed || player.TwoPressed || player.ThreePressed && !e.hasAttacked)
+                if (e.pos.X == player.playerPos.X + 1 && e.pos.Y == player.playerPos.Y && player.hasAttacked && !e.hasAttacked)
                 {
                     e.attack(player);
                     e.hasAttacked = true;
                 }
-                else if (e.pos.X == player.playerPos.X - 1 && e.pos.Y == player.playerPos.Y && player.OnePressed || player.TwoPressed || player.ThreePressed && !e.hasAttacked)
+                else if (e.pos.X == player.playerPos.X - 1 && e.pos.Y == player.playerPos.Y && player.hasAttacked && !e.hasAttacked)
                 {
                     e.attack(player);
                     e.hasAttacked = true;
                 }
-                else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y + 1 && player.OnePressed || player.TwoPressed || player.ThreePressed && !e.hasAttacked)
+                else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y + 1 && player.hasAttacked && !e.hasAttacked)
                 {
                     e.attack(player);
                     e.hasAttacked = true;
                 }
-                else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y - 1 && player.OnePressed || player.TwoPressed || player.ThreePressed && !e.hasAttacked)
+                else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y - 1 && player.hasAttacked && !e.hasAttacked)
                 {
                     e.attack(player);
                     e.hasAttacked = true;

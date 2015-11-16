@@ -106,6 +106,7 @@ namespace DungeonCrawler
                     }
             }
             p.OnePressed = true;
+            p.hasAttacked = true;
         }
 
         public void Skill2(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
@@ -185,6 +186,7 @@ namespace DungeonCrawler
                     }
             }
             p.TwoPressed = true;
+            p.hasAttacked = true;
         }
         public void Skill3(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
         {
@@ -196,8 +198,16 @@ namespace DungeonCrawler
                 {
                     e.health -= p.AttackDamage / 2;
                 }
+
+                if (e.health <= 0)
+                {
+                    e.isAlive = false;
+                    e.health = 0;
+                    Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
+                }
+                p.ThreePressed = true;
+                p.hasAttacked = true;
             }
-            p.ThreePressed = true;
         }
     }
 }

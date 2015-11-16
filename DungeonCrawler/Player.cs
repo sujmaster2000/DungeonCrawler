@@ -21,13 +21,15 @@ namespace DungeonCrawler
         public bool TwoPressed = false;
         public bool ThreePressed = false;
 
+        public bool hasAttacked;
+
         Item[] Equiped = new Item[4];
 
         public Vector2 playerPos;
 
         public int Health = 300;
 
-        public int AttackDamage = 50;
+        public int AttackDamage = 0;
 
         public Player(Vector2 Pos, Item Head, Item Body, Item Legs, Item Weapon)
         {
@@ -92,6 +94,53 @@ namespace DungeonCrawler
             else
             {
 
+                if (k.IsKeyUp(Keys.D))
+                {
+                    Dpressed = false;
+
+                }
+                if (k.IsKeyUp(Keys.A))
+                {
+                    Apressed = false;
+
+                }
+                if (k.IsKeyUp(Keys.S))
+                {
+                    Spressed = false;
+
+                }
+                if (k.IsKeyUp(Keys.W))
+                {
+                    Wpressed = false;
+
+                }
+                if (k.IsKeyUp(Keys.D1))
+                {
+                    OnePressed = false;
+                    hasAttacked = false;
+                    foreach (Enemy e in Enemies)
+                    {
+                        e.hasAttacked = false;
+                    }
+                }
+                if (k.IsKeyUp(Keys.D2))
+                {
+                    TwoPressed = false;
+                    hasAttacked = false;
+                    foreach (Enemy e in Enemies)
+                    {
+                        e.hasAttacked = false;
+                    }
+                }
+                if (k.IsKeyUp(Keys.D3))
+                {
+                    ThreePressed = false;
+                    hasAttacked = false;
+                    foreach (Enemy e in Enemies)
+                    {
+                        e.hasAttacked = false;
+                    }
+                }
                 if (k.IsKeyDown(Keys.D))
                 {
                     direction = 'r';
@@ -151,50 +200,6 @@ namespace DungeonCrawler
                     Equiped[3].SAbilities.Skill3(ref Enemies, this, game, Maze);
                 }
 
-                if (k.IsKeyUp(Keys.D))
-                {
-                    Dpressed = false;
-                    
-                }
-                if (k.IsKeyUp(Keys.A))
-                {
-                    Apressed = false;
-                    
-                }
-                if (k.IsKeyUp(Keys.S))
-                {
-                    Spressed = false;
-                    
-                }
-                if (k.IsKeyUp(Keys.W))
-                {
-                    Wpressed = false;
-                    
-                }
-                if (k.IsKeyUp(Keys.D1))
-                {
-                    OnePressed = false;
-                    foreach (Enemy e in Enemies)
-                    {
-                        e.hasAttacked = false;
-                    }
-                }
-                if (k.IsKeyUp(Keys.D2))
-                {
-                    TwoPressed = false;
-                    foreach (Enemy e in Enemies)
-                    {
-                        e.hasAttacked = false;
-                    }
-                }
-                if (k.IsKeyUp(Keys.D3))
-                {
-                    ThreePressed = false;
-                    foreach (Enemy e in Enemies)
-                    {
-                        e.hasAttacked = false;
-                    }
-                }
             }
    
             if (Maze[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] == "h")
