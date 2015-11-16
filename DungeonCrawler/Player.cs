@@ -17,10 +17,10 @@ namespace DungeonCrawler
         bool Dpressed = false;
         bool Spressed = false;
         bool Wpressed = false;
+        public bool Epressed = false;
         public bool OnePressed = false;
         public bool TwoPressed = false;
         public bool ThreePressed = false;
-
         public bool hasAttacked;
 
         Item[] Equiped = new Item[4];
@@ -113,6 +113,10 @@ namespace DungeonCrawler
                 {
                     Wpressed = false;
 
+                }
+                if (k.IsKeyUp(Keys.E))
+                {
+                    Epressed = false;
                 }
                 if (k.IsKeyUp(Keys.D1))
                 {

@@ -61,6 +61,8 @@ namespace DungeonCrawler
         /// related content.  Calling base.Initialize will enumerate through any components
         /// and initialize them as well.
         /// </summary>
+        /// 
+
         protected override void Initialize()
         {
             IsMouseVisible = true;
@@ -144,6 +146,14 @@ namespace DungeonCrawler
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            KeyboardState k = Keyboard.GetState();
+
+            if (k.IsKeyDown(Keys.E))
+            {
+                GEnemies.Add(new Enemy(test.maze, new Random(), 50));
+                player.Epressed = true;
+            }
 
             m.Update();
 
