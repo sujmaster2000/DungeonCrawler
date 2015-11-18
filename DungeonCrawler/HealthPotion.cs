@@ -9,14 +9,16 @@ namespace DungeonCrawler
 {
     class HealthPotion
     {
-        char state;
-        char type;
-        string name;
-
+        public bool hasBeenConsumed = false;
         public Vector2 pos;
         Rectangle rect;
 
-        public HealthPotion(Random r, string[,] Maze, char state, char type, string name)
+        public HealthPotion()
+        {
+
+        }
+
+        public HealthPotion(Random r, string[,] Maze)
         {
             bool validPos = false;
 
@@ -36,7 +38,10 @@ namespace DungeonCrawler
 
         public void Draw(SpriteBatch s, Texture2D t)
         {
-            s.Draw(t, rect, Color.White);
+            if (!hasBeenConsumed)
+            {
+                s.Draw(t, rect, Color.White);
+            }
         }
     }
 }

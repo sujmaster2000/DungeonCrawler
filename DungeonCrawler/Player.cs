@@ -43,7 +43,7 @@ namespace DungeonCrawler
             Health += Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier;
         }
 
-        public void update(string[,] Maze, GameTime g, Game1 game,out bool hasPerformedAction, List<Enemy> Enemies, SoundEffect attack, SoundEffect step)
+        public void update(string[,] Maze, GameTime g, Game1 game,out bool hasPerformedAction, List<Enemy> Enemies, ref List<HealthPotion> HPotions,SoundEffect attack, SoundEffect step)
         {
             hasPerformedAction = false;
             KeyboardState k = Keyboard.GetState();
@@ -206,9 +206,11 @@ namespace DungeonCrawler
 
             }
    
-            if (Maze[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] == "h")
+            if (Maze[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(0,1) == "h")
             {
                 Health += 50;
+                HPotions[Convert.ToInt32(Maze[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(1, 1))].hasBeenConsumed = true;
+                Maze[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] = "f";
             }
         }
 

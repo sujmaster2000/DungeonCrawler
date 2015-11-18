@@ -86,7 +86,7 @@ namespace DungeonCrawler
 
             for (int i = 0; i < 5; i++)
             {
-                HealthPotion h = new HealthPotion(r, test.maze, 'v', 'p', "healthPotion");
+                HealthPotion h = new HealthPotion(r, test.maze);
                 HPotions.Insert(i, h);
             }
 
@@ -98,9 +98,11 @@ namespace DungeonCrawler
 
             foreach (HealthPotion i in HPotions)
             {
-                test.maze[Convert.ToInt32(i.pos.X), Convert.ToInt32(i.pos.Y)] = "h";
+                if (!i.hasBeenConsumed)
+                {
+                    test.maze[Convert.ToInt32(i.pos.X), Convert.ToInt32(i.pos.Y)] = "h" + HPotions.IndexOf(i).ToString();
+                }
             }
-
             base.Initialize();
         }
 
@@ -167,7 +169,7 @@ namespace DungeonCrawler
                 success = "YES NIGGA";
             }
 
-            player.update(test.maze, gameTime, this, out HasMoved, GEnemies, attack, step);
+            player.update(test.maze, gameTime, this, out HasMoved, GEnemies, ref HPotions, attack, step);
             
             if (HasMoved == true)
             {
@@ -211,7 +213,10 @@ namespace DungeonCrawler
 
                 foreach (HealthPotion i in HPotions)
                 {
-                    test.maze[Convert.ToInt32(i.pos.X), Convert.ToInt32(i.pos.Y)] = "h";
+                    if (!i.hasBeenConsumed)
+                    {
+                        test.maze[Convert.ToInt32(i.pos.X), Convert.ToInt32(i.pos.Y)] = "h" + HPotions.IndexOf(i).ToString();
+                    }
                 }
 
                 HasMoved = false;

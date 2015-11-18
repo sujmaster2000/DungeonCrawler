@@ -62,7 +62,7 @@ namespace DungeonCrawler
                 {
                     for (int j = 0; j < Maze.GetLength(1); j++)
                     {
-                        if (Maze[j, i] == "f" || Maze[j, i] == "h" || Maze[j,i] == "e")
+                        if (Maze[j, i] == "f" || Maze[j, i].Substring(0,1) == "h" || Maze[j,i] == "e")
                         {
                             maze[j, i, 0] = 999;
                         }

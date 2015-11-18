@@ -377,12 +377,15 @@ namespace DungeonCrawler
                 {
                     if (j < p.playerPos.X + 5 && j > p.playerPos.X - 5 && i < p.playerPos.Y + 5 && i > p.playerPos.Y - 5)
                     {
-                        switch (maze[j, i])
+                        switch (maze[j, i].Substring(0,1))
                         {
                             case "w":
                                 s.Draw(wall, new Rectangle(j * 32, i * 32, 32, 32), Color.White);
                                 break;
                             case "f":
+                                s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.White);
+                                break;
+                            case "h":
                                 s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.White);
                                 break;
                             case "e":
@@ -393,13 +396,16 @@ namespace DungeonCrawler
 
                     else
                     {
-                        switch (maze[j, i])
+                        switch (maze[j, i].Substring(0,1))
                         {
                             case "w":
                                 s.Draw(wall, new Rectangle(j * 32, i * 32, 32, 32), Color.DarkGray);
                                 break;
                             case "f":
                                 s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.DarkGray);
+                                break;
+                            case "h":
+                                s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.White);
                                 break;
                             case "e":
                                 s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.DarkGray);
