@@ -405,7 +405,7 @@ namespace DungeonCrawler
                                 s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.DarkGray);
                                 break;
                             case "h":
-                                s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.White);
+                                s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.DarkGray);
                                 break;
                             case "e":
                                 s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.DarkGray);

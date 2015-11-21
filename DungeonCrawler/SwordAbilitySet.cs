@@ -16,6 +16,11 @@ namespace DungeonCrawler
         Texture2D Skill3_icon;
         Texture2D Skill4_icon;
 
+        public int Skill1_Cooldown = 0;
+        public int Skill2_Cooldown = 0;
+        public int Skill3_Cooldown = 0;
+        int Skill4_Cooldown = 0;
+
         public SwordAbilitySet(Texture2D icon1, Texture2D icon2, Texture2D icon3, Texture2D icon4)
         {
             Skill1_icon = icon1;
@@ -31,8 +36,8 @@ namespace DungeonCrawler
 
         public void Skill1(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
         {
+            UpdateCooldown(p);
             game.HasMoved = true;
-
             switch (p.direction)
             {
                 case 'd':
@@ -112,100 +117,129 @@ namespace DungeonCrawler
         public void Skill2(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
         {
             game.HasMoved = true;
-
-            switch (p.direction)
+            UpdateCooldown(p);
+            if (Skill2_Cooldown <= 0)
             {
-                case 'd':
-                    {
-                        foreach (Enemy e in Enemies)
+                switch (p.direction)
+                {
+                    case 'd':
                         {
-                            if (p.playerPos.X == e.pos.X && e.pos.Y < p.playerPos.Y + 5 && e.pos.Y > p.playerPos.Y && e.health > 0)
+                            foreach (Enemy e in Enemies)
                             {
-                                e.health -= p.AttackDamage;
+                                if (p.playerPos.X == e.pos.X && e.pos.Y < p.playerPos.Y + 5 && e.pos.Y > p.playerPos.Y && e.health > 0)
+                                {
+                                    e.health -= p.AttackDamage;
+                                }
+                                if (e.health <= 0)
+                                {
+                                    e.isAlive = false;
+                                    e.health = 0;
+                                    Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
+                                }
                             }
-                            if (e.health <= 0)
-                            {
-                                e.isAlive = false;
-                                e.health = 0;
-                                Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
-                            }
+                            break;
                         }
-                        break;
-                    }
-                case 'u':
-                    {
-                        foreach (Enemy e in Enemies)
+                    case 'u':
                         {
-                            if (p.playerPos.X == e.pos.X && e.pos.Y < p.playerPos.Y && e.pos.Y > p.playerPos.Y - 5 && e.health > 0)
+                            foreach (Enemy e in Enemies)
                             {
-                                e.health -= p.AttackDamage;
+                                if (p.playerPos.X == e.pos.X && e.pos.Y < p.playerPos.Y && e.pos.Y > p.playerPos.Y - 5 && e.health > 0)
+                                {
+                                    e.health -= p.AttackDamage;
+                                }
+                                if (e.health <= 0)
+                                {
+                                    e.isAlive = false;
+                                    e.health = 0;
+                                    Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
+                                }
                             }
-                            if (e.health <= 0)
-                            {
-                                e.isAlive = false;
-                                e.health = 0;
-                                Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
-                            }
+                            break;
                         }
-                        break;
-                    }
-                case 'l':
-                    {
-                        foreach (Enemy e in Enemies)
+                    case 'l':
                         {
-                            if (p.playerPos.Y == e.pos.Y && e.pos.X < p.playerPos.X && e.pos.X > p.playerPos.X - 5 && e.health > 0)
+                            foreach (Enemy e in Enemies)
                             {
-                                e.health -= p.AttackDamage;
+                                if (p.playerPos.Y == e.pos.Y && e.pos.X < p.playerPos.X && e.pos.X > p.playerPos.X - 5 && e.health > 0)
+                                {
+                                    e.health -= p.AttackDamage;
+                                }
+                                if (e.health <= 0)
+                                {
+                                    e.isAlive = false;
+                                    e.health = 0;
+                                    Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
+                                }
                             }
-                            if (e.health <= 0)
-                            {
-                                e.isAlive = false;
-                                e.health = 0;
-                                Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
-                            }
-                        }
 
-                        break;
-                    }
-                case 'r':
-                    {
-                        foreach (Enemy e in Enemies)
-                        {
-                            if (p.playerPos.Y == e.pos.Y && e.pos.X < p.playerPos.X + 5 && e.pos.X > p.playerPos.X && e.health > 0)
-                            {
-                                e.health -= p.AttackDamage;
-                            }
-                            if (e.health <= 0)
-                            {
-                                e.isAlive = false;
-                                e.health = 0;
-                                Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
-                            }
+                            break;
                         }
-                        break;
-                    }
+                    case 'r':
+                        {
+                            foreach (Enemy e in Enemies)
+                            {
+                                if (p.playerPos.Y == e.pos.Y && e.pos.X < p.playerPos.X + 5 && e.pos.X > p.playerPos.X && e.health > 0)
+                                {
+                                    e.health -= p.AttackDamage;
+                                }
+                                if (e.health <= 0)
+                                {
+                                    e.isAlive = false;
+                                    e.health = 0;
+                                    Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
+                                }
+                            }
+                            break;
+                        }
+                }
+                p.TwoPressed = true;
+                p.hasAttacked = true;
+                Skill2_Cooldown = 2;
             }
-            p.TwoPressed = true;
-            p.hasAttacked = true;
         }
         public void Skill3(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
         {
+            UpdateCooldown(p);
             game.HasMoved = true;
-
-            foreach (Enemy e in Enemies)
+            if (Skill3_Cooldown <= 0)
             {
-                if (e.pos.X < p.playerPos.X + 3 && e.pos.X > p.playerPos.X - 3 && e.pos.Y < p.playerPos.Y + 3 && e.pos.Y > p.playerPos.Y - 3)
+                foreach (Enemy e in Enemies)
                 {
-                    e.health -= p.AttackDamage / 2;
-                }
+                    if (e.pos.X < p.playerPos.X + 3 && e.pos.X > p.playerPos.X - 3 && e.pos.Y < p.playerPos.Y + 3 && e.pos.Y > p.playerPos.Y - 3)
+                    {
+                        e.health -= p.AttackDamage / 2;
+                    }
 
-                if (e.health <= 0)
-                {
-                    e.isAlive = false;
-                    e.health = 0;
-                    Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
+                    if (e.health <= 0)
+                    {
+                        e.isAlive = false;
+                        e.health = 0;
+                        Maze[Convert.ToInt32(e.pos.X), Convert.ToInt32(e.pos.Y)] = "f";
+                    }
+                    p.ThreePressed = true;
+                    p.hasAttacked = true;
                 }
-                p.ThreePressed = true;
+                Skill3_Cooldown = 5;
+
+            }
+        }
+
+        public void UpdateCooldown(Player p)
+        {
+            Skill1_Cooldown -= 1;
+            Skill2_Cooldown -= 1;
+            Skill3_Cooldown -= 1;
+
+            if (Skill1_Cooldown > 0)
+            {
+                p.hasAttacked = true;
+            }
+            if (Skill2_Cooldown > 0)
+            {
+                p.hasAttacked = true;
+            }
+            if (Skill3_Cooldown > 0)
+            {
                 p.hasAttacked = true;
             }
         }

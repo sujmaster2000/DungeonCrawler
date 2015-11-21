@@ -34,6 +34,7 @@ namespace DungeonCrawler
         Texture2D healthPotion;
 
         string success = "";
+        string coolDowns = "";
 
         SoundEffect attack;
         SoundEffect step;
@@ -151,6 +152,38 @@ namespace DungeonCrawler
 
             KeyboardState k = Keyboard.GetState();
 
+            coolDowns = "Skill 1: ";
+
+            if (player.Equiped[3].SAbilities.Skill1_Cooldown >= 0)
+            {
+                coolDowns += player.Equiped[3].SAbilities.Skill1_Cooldown;
+            }
+
+            else
+            {
+                coolDowns += 0;
+            }
+
+            coolDowns += "Skill 2: ";
+
+            if (player.Equiped[3].SAbilities.Skill2_Cooldown >= 0)
+            {
+                coolDowns += player.Equiped[3].SAbilities.Skill2_Cooldown;
+            }
+            else
+            {
+                coolDowns += 0;
+            }
+            coolDowns += "Skill 3: ";
+
+            if (player.Equiped[3].SAbilities.Skill3_Cooldown >= 0)
+            {
+                coolDowns += player.Equiped[3].SAbilities.Skill3_Cooldown;
+            }
+            else
+            {
+                coolDowns += 0;
+            }
             if (k.IsKeyDown(Keys.E))
             {
                 GEnemies.Add(new Enemy(test.maze, new Random(), 50));
@@ -222,7 +255,7 @@ namespace DungeonCrawler
                 HasMoved = false;
             }
 
-                // TODO: Add your update logic here
+            // TODO: Add your update logic here
             camera.Update(gameTime, player.playerPos);
             fps.Update(gameTime);
 
@@ -258,6 +291,7 @@ namespace DungeonCrawler
             spriteBatch.DrawString(arial, "health: " + player.Health, new Vector2(player.playerPos.X * 32 - 300, player.playerPos.Y * 32 + 160), Color.Red);
             spriteBatch.DrawString(arial, m.rect.X + " " + m.rect.Y, new Vector2(player.playerPos.X * 32 + 15, player.playerPos.Y * 32 + 15), Color.Red);
             spriteBatch.DrawString(arial, success, new Vector2(player.playerPos.X * 32 + 15, player.playerPos.Y * 32 + 15), Color.Red);
+            spriteBatch.DrawString(arial, coolDowns, new Vector2(player.playerPos.X * 32 - 30, player.playerPos.Y * 32 + 150), Color.White);
             foreach (Button b in gui.Buttons)
             {
                 b.Draw(spriteBatch, arial);
