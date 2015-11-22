@@ -11,24 +11,31 @@ namespace DungeonCrawler
     class Enemy
     {
         public Vector2 pos;
+        public Vector2 prevPos;
         public Rectangle rect;
         public bool isAlive = true;
         public bool hasAttacked = false;
 
+        public List<Item> Equiped = new List<Item>();
+
+        public char direction;
+
         public int health;
 
-        public Enemy (Vector2 Pos, int Health)
+        public Enemy (Vector2 Pos, Item Head, Item Body, Item Legs, Item Weapon)
         {
             pos = Pos;
             rect = new Rectangle(Convert.ToInt32(pos.X * 32), Convert.ToInt32(pos.Y * 32), 32, 32);
-            health = Health;
+            health = 20 + (Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier);
+            Equiped.Add(Head);
+            Equiped.Add(Body);
+            Equiped.Add(Legs);
+            Equiped.Add(Weapon);
         }
 
-        public Enemy(string[,] Maze, Random r, int Health)
+        public Enemy(string[,] Maze, Random r, Item Head, Item Body, Item Legs, Item Weapon)
         {
             bool validPos = false;
-
-            health = Health;
 
             while (!validPos)
             {
@@ -42,6 +49,11 @@ namespace DungeonCrawler
             }
 
             rect = new Rectangle(Convert.ToInt32(pos.X * 32), Convert.ToInt32(pos.Y * 32), 32, 32);
+            health = 20 + (Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier);
+            Equiped.Add(Head);
+            Equiped.Add(Body);
+            Equiped.Add(Legs);
+            Equiped.Add(Weapon);
         }
 
         public void Update(Player p, string[,] Maze)
@@ -54,6 +66,7 @@ namespace DungeonCrawler
 
             if (isAlive == true)
             {
+                prevPos = pos;
                 int[, ,] maze;
 
                 maze = new int[Maze.GetLength(0), Maze.GetLength(1), 3];
@@ -129,25 +142,6 @@ namespace DungeonCrawler
                     }
                 }
 
-                string towritetofile = "";
-
-                for (int i = 0; i < maze.GetLength(0); i++)
-                {
-                    for (int j = 0; j < maze.GetLength(1); j++)
-                    {
-
-                        towritetofile += maze[j, i, 0];
-                        for (int k = 0; k < 5 - maze[j, i, 0].ToString().Length; k++)
-                        {
-                            towritetofile += " ";
-                        }
-
-                    }
-                    towritetofile += System.Environment.NewLine;
-                }
-
-                System.IO.File.WriteAllText("maze.txt", towritetofile);
-
                 int[,] path = new int[maze[Convert.ToInt32(p.playerPos.X), Convert.ToInt32(p.playerPos.Y), 0], 2];
 
                 //endpoint coordinates
@@ -190,9 +184,69 @@ namespace DungeonCrawler
         public void draw(SpriteBatch s, Texture2D t, SpriteFont f, Player p)
         {
             if (pos.X < p.playerPos.X + 5 && pos.X > p.playerPos.X - 5 && pos.Y < p.playerPos.Y + 5 && pos.Y > p.playerPos.Y - 5 && isAlive)
-            {
+            {/*
                 s.Draw(t, rect, Color.White);
-                s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+                s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);*/
+                if (prevPos.Y - 1 == pos.Y)
+                {
+                    direction = 'u'; 
+                    
+                }
+                else if (prevPos.Y + 1 == pos.Y)
+                {
+                    direction = 'd';
+                    
+                }
+                else if (prevPos.X - 1 == pos.X)
+                {
+                    direction = 'l';
+                    
+                }
+                else if (prevPos.X + 1 == pos.X)
+                {
+                    direction = 'r';
+                    
+                }
+
+                switch (direction)
+                {
+                    case 'u':
+                        {
+                            s.Draw(Equiped[0].Textures[0], pos * 32, Color.Red);
+                            s.Draw(Equiped[1].Textures[0], pos * 32, Color.Red);
+                            s.Draw(Equiped[2].Textures[0], pos * 32, Color.Red);
+                            s.Draw(Equiped[3].Textures[0], pos * 32, Color.Red);
+                            s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+                            break;
+                        }
+                    case 'd':
+                        {
+                            s.Draw(Equiped[3].Textures[1], pos * 32, Color.Red);
+                            s.Draw(Equiped[0].Textures[1], pos * 32, Color.Red);
+                            s.Draw(Equiped[1].Textures[1], pos * 32, Color.Red);
+                            s.Draw(Equiped[2].Textures[1], pos * 32, Color.Red);
+                            s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+                            break;
+                        }
+                    case 'l':
+                        {
+                            s.Draw(Equiped[0].Textures[2], pos * 32, Color.Red);
+                            s.Draw(Equiped[1].Textures[2], pos * 32, Color.Red);
+                            s.Draw(Equiped[2].Textures[2], pos * 32, Color.Red);
+                            s.Draw(Equiped[3].Textures[2], pos * 32, Color.Red);
+                            s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+                            break;
+                        }
+                    case 'r':
+                        {
+                            s.Draw(Equiped[0].Textures[3], pos * 32, Color.Red);
+                            s.Draw(Equiped[1].Textures[3], pos * 32, Color.Red);
+                            s.Draw(Equiped[2].Textures[3], pos * 32, Color.Red);
+                            s.Draw(Equiped[3].Textures[3], pos * 32, Color.Red);
+                            s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+                            break;
+                        }
+                }
             }
         }
     }

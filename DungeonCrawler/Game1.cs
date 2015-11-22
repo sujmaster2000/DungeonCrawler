@@ -14,8 +14,6 @@ namespace DungeonCrawler
     /// </summary>
     public class Game1 : Game
     {
-        GUIHandler gui;
-
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Random r;
@@ -62,28 +60,15 @@ namespace DungeonCrawler
         /// related content.  Calling base.Initialize will enumerate through any components
         /// and initialize them as well.
         /// </summary>
-        /// 
 
         protected override void Initialize()
         {
             IsMouseVisible = true;
 
-            gui = new GUIHandler();
-
-            Button b = new Button();
-
-            gui.AddButton(b);
-
             r = new Random();
 
             // TODO: Add your initialization logic here
             test = new Floor(21, null);
-
-            for (int i = 0; i < 15; i++ )
-            {
-                Enemy e = new Enemy(test.maze, r, 80);
-                GEnemies.Insert(i, e);
-            }
 
             for (int i = 0; i < 5; i++)
             {
@@ -120,14 +105,24 @@ namespace DungeonCrawler
             arial = Content.Load<SpriteFont>("myFont");
             player_texture = Content.Load<Texture2D>("jordeKang.jpg");
             healthPotion = Content.Load<Texture2D>("HealthPotion.png");
-            player = new Player(new Vector2(1, 1), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4),
-                new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2),
-                new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2),
-                new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet()));
-            gui.Buttons.ElementAt(0).LoadContent(Content, "buttonTexture", Convert.ToInt32(player.playerPos.X + 150), Convert.ToInt32(player.playerPos.Y + 150));
+
+
 
             attack = Content.Load<SoundEffect>("AttackSound");
             step = Content.Load<SoundEffect>("Step");
+            player = new Player(new Vector2(1, 1), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4),
+    new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2),
+    new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2),
+    new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet(attack, attack, attack)));
+
+            for (int i = 0; i < 15; i++)
+            {
+                Enemy e = new Enemy(test.maze, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4),
+    new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2),
+    new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2),
+    new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet(attack, attack, attack)));
+                GEnemies.Insert(i, e);
+            }
             // TODO: use this.Content to load your game content here
         }
 
@@ -186,21 +181,14 @@ namespace DungeonCrawler
             }
             if (k.IsKeyDown(Keys.E))
             {
-                GEnemies.Add(new Enemy(test.maze, new Random(), 50));
+                GEnemies.Add(new Enemy(test.maze, new Random(), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4),
+    new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2),
+    new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2),
+    new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet(attack, attack, attack))));
                 player.Epressed = true;
             }
 
             m.Update();
-
-            foreach(Button b in gui.Buttons)
-            {
-                b.Update(Convert.ToInt32(player.playerPos.X) * 32 + 150, Convert.ToInt32(player.playerPos.Y) * 32 + 150);
-            }
-
-            if (gui.Buttons.ElementAt(0).hasBeenPressed(m.rect, m.m))
-            {
-                success = "YES NIGGA";
-            }
 
             player.update(test.maze, gameTime, this, out HasMoved, GEnemies, ref HPotions, attack, step);
             
@@ -292,10 +280,6 @@ namespace DungeonCrawler
             spriteBatch.DrawString(arial, m.rect.X + " " + m.rect.Y, new Vector2(player.playerPos.X * 32 + 15, player.playerPos.Y * 32 + 15), Color.Red);
             spriteBatch.DrawString(arial, success, new Vector2(player.playerPos.X * 32 + 15, player.playerPos.Y * 32 + 15), Color.Red);
             spriteBatch.DrawString(arial, coolDowns, new Vector2(player.playerPos.X * 32 - 30, player.playerPos.Y * 32 + 150), Color.White);
-            foreach (Button b in gui.Buttons)
-            {
-                b.Draw(spriteBatch, arial);
-            }
 
             spriteBatch.End();
             // TODO: Add your drawing code here

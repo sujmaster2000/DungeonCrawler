@@ -16,6 +16,10 @@ namespace DungeonCrawler
         Texture2D Skill3_icon;
         Texture2D Skill4_icon;
 
+        SoundEffect Skill1_Soundeffect;
+        SoundEffect Skill2_Soundeffect;
+        SoundEffect Skill3_Soundeffect;
+
         public int Skill1_Cooldown = 0;
         public int Skill2_Cooldown = 0;
         public int Skill3_Cooldown = 0;
@@ -29,9 +33,11 @@ namespace DungeonCrawler
             Skill4_icon = icon4;
         }
 
-        public SwordAbilitySet()
+        public SwordAbilitySet(SoundEffect skill1_Soundeffect, SoundEffect skill2_Soundeffect, SoundEffect skill3_Soundeffect)
         {
-
+            Skill1_Soundeffect = skill1_Soundeffect;
+            Skill2_Soundeffect = skill2_Soundeffect;
+            Skill3_Soundeffect = skill3_Soundeffect;
         }
 
         public void Skill1(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
