@@ -25,6 +25,7 @@ namespace DungeonCrawler
         List<Enemy> GEnemies = new List<Enemy>();
 
         MouseHandler m;
+        MessageHandler Messages;
 
         Texture2D wall;
         Texture2D floor;
@@ -63,6 +64,7 @@ namespace DungeonCrawler
 
         protected override void Initialize()
         {
+
             IsMouseVisible = true;
 
             r = new Random();
@@ -105,9 +107,6 @@ namespace DungeonCrawler
             arial = Content.Load<SpriteFont>("myFont");
             player_texture = Content.Load<Texture2D>("jordeKang.jpg");
             healthPotion = Content.Load<Texture2D>("HealthPotion.png");
-
-
-
             attack = Content.Load<SoundEffect>("AttackSound");
             step = Content.Load<SoundEffect>("Step");
             player = new Player(new Vector2(1, 1), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4),
@@ -123,6 +122,7 @@ namespace DungeonCrawler
     new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet(attack, attack, attack)));
                 GEnemies.Insert(i, e);
             }
+            Messages = new MessageHandler(new Vector2(player.playerPos.X * 32 + 150, player.playerPos.Y * 32 - 360));
             // TODO: use this.Content to load your game content here
         }
 
@@ -144,6 +144,8 @@ namespace DungeonCrawler
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            Messages.Update(new Vector2(player.playerPos.X * 32 + 150, player.playerPos.Y * 32 - 360));
 
             KeyboardState k = Keyboard.GetState();
 
@@ -186,6 +188,15 @@ namespace DungeonCrawler
     new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2),
     new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet(attack, attack, attack))));
                 player.Epressed = true;
+            }
+
+            else if (k.IsKeyDown(Keys.T))
+            {
+                Messages.AddMessage("Success!");
+            }
+            else if (k.IsKeyDown(Keys.B))
+            {
+                Messages.AddMessage("MoarSuccess!");
             }
 
             m.Update();
@@ -280,6 +291,8 @@ namespace DungeonCrawler
             spriteBatch.DrawString(arial, m.rect.X + " " + m.rect.Y, new Vector2(player.playerPos.X * 32 + 15, player.playerPos.Y * 32 + 15), Color.Red);
             spriteBatch.DrawString(arial, success, new Vector2(player.playerPos.X * 32 + 15, player.playerPos.Y * 32 + 15), Color.Red);
             spriteBatch.DrawString(arial, coolDowns, new Vector2(player.playerPos.X * 32 - 30, player.playerPos.Y * 32 + 150), Color.White);
+
+            Messages.Draw(spriteBatch, arial);
 
             spriteBatch.End();
             // TODO: Add your drawing code here

@@ -210,7 +210,7 @@ namespace DungeonCrawler
 
                 switch (direction)
                 {
-                    case 'u':
+                    case 'd':
                         {
                             s.Draw(Equiped[0].Textures[0], pos * 32, Color.Red);
                             s.Draw(Equiped[1].Textures[0], pos * 32, Color.Red);
@@ -219,7 +219,7 @@ namespace DungeonCrawler
                             s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
                             break;
                         }
-                    case 'd':
+                    case 'u':
                         {
                             s.Draw(Equiped[3].Textures[1], pos * 32, Color.Red);
                             s.Draw(Equiped[0].Textures[1], pos * 32, Color.Red);

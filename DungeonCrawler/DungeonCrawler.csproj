@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Button.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="MessageHandler.cs" />
     <Compile Include="SwordAbilitySet.cs" />
     <Compile Include="GUIHandler.cs" />
     <Compile Include="HealthPotion.cs" />
