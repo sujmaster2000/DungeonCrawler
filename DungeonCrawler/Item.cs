@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace DungeonCrawler
 {
-    class Item
+    public class Item
     {
         public Texture2D[] Textures;
 
@@ -51,6 +51,11 @@ namespace DungeonCrawler
                         break;
                     }
             }
+        }
+
+        public Item()
+        {
+
         }
     }
 }

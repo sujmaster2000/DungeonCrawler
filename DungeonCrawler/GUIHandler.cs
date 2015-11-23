@@ -14,6 +14,11 @@ namespace DungeonCrawler
     {
         public List<Button> Buttons = new List<Button>();
 
+        public GUIHandler()
+        {
+
+        }
+
         public void AddButton(Button b)
         {
             Buttons.Add(b);

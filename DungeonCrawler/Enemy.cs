@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DungeonCrawler
 {
-    class Enemy
+    public class Enemy
     {
         public Vector2 pos;
         public Vector2 prevPos;
@@ -54,6 +54,11 @@ namespace DungeonCrawler
             Equiped.Add(Body);
             Equiped.Add(Legs);
             Equiped.Add(Weapon);
+        }
+
+        public Enemy()
+        {
+
         }
 
         public void Update(Player p, string[,] Maze)

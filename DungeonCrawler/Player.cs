@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace DungeonCrawler
 {
-    class Player
+    public class Player
     {
         public char direction = 'r';
 
@@ -30,6 +30,13 @@ namespace DungeonCrawler
         public int Health = 300;
 
         public int AttackDamage = 0;
+
+        public XMLManager<Player> xmlPlayerManager = new XMLManager<Player>();
+
+        public Player()
+        {
+
+        }
 
         public Player(Vector2 Pos, Item Head, Item Body, Item Legs, Item Weapon)
         {

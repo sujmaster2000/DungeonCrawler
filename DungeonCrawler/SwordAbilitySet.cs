@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace DungeonCrawler
 {
-    class SwordAbilitySet
+    public class SwordAbilitySet
     {
         Texture2D Skill1_icon;
         Texture2D Skill2_icon;
@@ -38,6 +38,11 @@ namespace DungeonCrawler
             Skill1_Soundeffect = skill1_Soundeffect;
             Skill2_Soundeffect = skill2_Soundeffect;
             Skill3_Soundeffect = skill3_Soundeffect;
+        }
+
+        public SwordAbilitySet()
+        {
+
         }
 
         public void Skill1(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)

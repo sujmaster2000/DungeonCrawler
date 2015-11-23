@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace DungeonCrawler
 {
-    class MouseHandler
+    public class MouseHandler
     {
         public Rectangle rect;
         public MouseState m;

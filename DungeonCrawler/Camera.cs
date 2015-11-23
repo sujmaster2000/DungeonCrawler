@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DungeonCrawler
 {
-    class Camera
+    public class Camera
     {
         public Matrix transform;
         Viewport view;
@@ -16,6 +16,11 @@ namespace DungeonCrawler
         public Camera (Viewport newView)
         {
             view = newView;
+        }
+
+        public Camera()
+        {
+
         }
 
         public void Update(GameTime g, Vector2 playerPos)

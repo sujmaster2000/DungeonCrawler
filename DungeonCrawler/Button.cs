@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace DungeonCrawler
 {
-    class Button
+    public class Button
     {
 
         Texture2D ButtonTexture;
@@ -19,6 +19,11 @@ namespace DungeonCrawler
 
         int SuccessX;
         int SuccessY;
+        
+        public Button()
+        {
+
+        }
 
         public void LoadContent(ContentManager Content, string Path, int x, int y)
         {

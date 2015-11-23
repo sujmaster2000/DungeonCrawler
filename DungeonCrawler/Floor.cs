@@ -9,9 +9,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DungeonCrawler
 {
-    class Floor
+    public class Floor
     {
         public string[,] maze;
+
+        public XMLManager<Floor> xmlFloorManager = new XMLManager<Floor>();
 
         public static void GenLevel(out string[,] Maze, int size, string Seed)
         {
@@ -367,6 +369,10 @@ namespace DungeonCrawler
         public Floor(int Size, string Seed)
         {
             GenLevel(out maze, Size, Seed);
+        }
+        
+        public Floor()
+        { 
         }
 
         public void DrawLevel(SpriteBatch s, Texture2D wall, Texture2D floor, Player p)

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace DungeonCrawler
 {
-    class HealthPotion
+    public class HealthPotion
     {
         public bool hasBeenConsumed = false;
         public Vector2 pos;

@@ -6,11 +6,16 @@ using System.Text;
 
 namespace DungeonCrawler
 {
-    class FrameRateCounter
+    public class FrameRateCounter
     {
         public int frameRate = 0;
         public int frameCounter = 0;
         TimeSpan elapsedTime = TimeSpan.Zero;
+
+        public FrameRateCounter()
+        {
+
+        }
 
         public void Update(GameTime gameTime)
         {

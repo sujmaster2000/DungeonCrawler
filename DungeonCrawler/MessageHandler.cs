@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DungeonCrawler
 {
-    class MessageHandler
+    public class MessageHandler
     {
         public string[] Message = new string[5];
         public Vector2 MessageBoxLocation;
@@ -22,6 +22,11 @@ namespace DungeonCrawler
             }
         }
         
+        public MessageHandler()
+        {
+
+        }
+
         public void AddMessage(string s)
         {
             for (int i = 4; i > 0; i-- )
