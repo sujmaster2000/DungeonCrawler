@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,9 +12,40 @@ namespace DungeonCrawler
 {
     public class Floor
     {
+        [XmlIgnore]
         public string[,] maze;
 
+        [XmlArray("maze")]
+
+        public string[][] jagMaze;
+
         public XMLManager<Floor> xmlFloorManager = new XMLManager<Floor>();
+
+        public List<Enemy> enemies;
+
+        public void toJaggedArray(out string[][] JagMaze, string[,] Maze)
+        {
+            JagMaze = new string[Maze.GetLength(0)][];
+
+            for (int i = 0; i < Maze.GetLength(0); i++)
+            {
+                JagMaze[i] = new string[Maze.GetLength(1)];
+
+                for (int j = 0; j < Maze.GetLength(1); j++)
+                    JagMaze[i][j] = Maze[i, j];
+            }
+        }
+
+        public void to2DArray(out string[,] Maze, string[][] JagMaze)
+        {
+            Maze = new string[JagMaze.GetLength(0),JagMaze[0].GetLength(0)];
+
+            for (int i = 0; i < Maze.GetLength(0); i++)
+            {
+                for (int j = 0; j < Maze.GetLength(1); j++)
+                    Maze[i,j] = JagMaze[i][j];
+            }
+        }
 
         public static void GenLevel(out string[,] Maze, int size, string Seed)
         {

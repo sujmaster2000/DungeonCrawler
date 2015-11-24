@@ -15,6 +15,7 @@ namespace DungeonCrawler
 
         }
 
+        [XmlIgnore]
         public Type Type { get;  set; }
 
         public T Load(string path)
@@ -33,8 +34,16 @@ namespace DungeonCrawler
         {
             using (TextWriter writer = new StreamWriter(path))
             {
-                XmlSerializer xml = new XmlSerializer(Type);
-                xml.Serialize(writer, obj);
+                try
+                {
+                    XmlSerializer xml = new XmlSerializer(Type);
+                    xml.Serialize(writer, obj);
+                }
+
+                catch(Exception e)
+                {
+                    Exception iE = e.InnerException;
+                }
             }
         }
     }

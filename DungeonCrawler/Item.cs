@@ -6,11 +6,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using System.Xml.Serialization;
 
 namespace DungeonCrawler
 {
     public class Item
     {
+        [XmlIgnore]
         public Texture2D[] Textures;
 
         public int healthModifier;

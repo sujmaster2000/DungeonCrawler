@@ -198,6 +198,9 @@ namespace DungeonCrawler
 
                 player.xmlPlayerManager.Save("player.sav", player);
                 test.xmlFloorManager.Save("test.sav", test);
+                test.toJaggedArray(out test.jagMaze, test.maze);
+
+                test.enemies = GEnemies;
             }
             if (k.IsKeyDown(Keys.B))
             {
@@ -207,6 +210,9 @@ namespace DungeonCrawler
 
                 player = player.xmlPlayerManager.Load("player.sav");
                 test = test.xmlFloorManager.Load("test.sav");
+                test.to2DArray(out test.maze, test.jagMaze);
+
+                this.LoadContent();
             }
 
             m.Update();
