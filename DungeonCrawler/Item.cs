@@ -12,7 +12,6 @@ namespace DungeonCrawler
 {
     public class Item
     {
-        [XmlIgnore]
         public Texture2D[] Textures;
 
         public int healthModifier;

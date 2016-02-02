@@ -12,14 +12,9 @@ namespace DungeonCrawler
 {
     public class Floor
     {
-        [XmlIgnore]
         public string[,] maze;
 
-        [XmlArray("maze")]
-
         public string[][] jagMaze;
-
-        public XMLManager<Floor> xmlFloorManager = new XMLManager<Floor>();
 
         public List<Enemy> enemies;
 

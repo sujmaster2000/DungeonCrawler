@@ -190,30 +190,6 @@ namespace DungeonCrawler
                 player.Epressed = true;
             }
 
-            if (k.IsKeyDown(Keys.T))
-            {
-                Messages.AddMessage("Attempting to save");
-                player.xmlPlayerManager.Type = player.GetType();
-                test.xmlFloorManager.Type = test.GetType();
-
-                player.xmlPlayerManager.Save("player.sav", player);
-                test.xmlFloorManager.Save("test.sav", test);
-                test.toJaggedArray(out test.jagMaze, test.maze);
-
-                test.enemies = GEnemies;
-            }
-            if (k.IsKeyDown(Keys.B))
-            {
-                Messages.AddMessage("Attempting to load");
-                player.xmlPlayerManager.Type = player.GetType();
-                test.xmlFloorManager.Type = test.GetType();
-
-                player = player.xmlPlayerManager.Load("player.sav");
-                test = test.xmlFloorManager.Load("test.sav");
-                test.to2DArray(out test.maze, test.jagMaze);
-
-                this.LoadContent();
-            }
 
             m.Update();
 

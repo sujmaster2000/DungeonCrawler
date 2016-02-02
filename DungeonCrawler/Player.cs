@@ -31,8 +31,6 @@ namespace DungeonCrawler
 
         public int AttackDamage = 0;
 
-        public XMLManager<Player> xmlPlayerManager = new XMLManager<Player>();
-
         public Player()
         {
 
