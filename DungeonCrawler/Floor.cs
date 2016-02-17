@@ -12,33 +12,212 @@ namespace DungeonCrawler
 {
     public class Floor
     {
-        public string[,] maze;
-
-        public string[][] jagMaze;
+        public string[,] Wall_Grid;
+        public string[,] HP_Grid;
+        public string[,] Enemy_Grid;
+        public string[,] Item_Grid;
+        public string[,] EntranceExit_Grid;
 
         public List<Enemy> enemies;
 
-        public void toJaggedArray(out string[][] JagMaze, string[,] Maze)
+        public struct doubleInt
         {
-            JagMaze = new string[Maze.GetLength(0)][];
-
-            for (int i = 0; i < Maze.GetLength(0); i++)
-            {
-                JagMaze[i] = new string[Maze.GetLength(1)];
-
-                for (int j = 0; j < Maze.GetLength(1); j++)
-                    JagMaze[i][j] = Maze[i, j];
-            }
+            public int x;
+            public int y;
         }
 
-        public void to2DArray(out string[,] Maze, string[][] JagMaze)
+        public static void KrusukalLevel(out string[,] Maze, int size, string seed)
         {
-            Maze = new string[JagMaze.GetLength(0),JagMaze[0].GetLength(0)];
-
-            for (int i = 0; i < Maze.GetLength(0); i++)
+            if (size % 2 == 0)
             {
-                for (int j = 0; j < Maze.GetLength(1); j++)
-                    Maze[i,j] = JagMaze[i][j];
+                Maze = new string[size + 1, size + 1];
+            }
+            else
+            {
+                Maze = new string[size, size];
+            }
+
+
+            int[,] maze = new int[size, size];
+            List<doubleInt> edges = new List<doubleInt>();
+
+            int counter = 0;
+
+            Random r = new Random();
+
+            if (seed != null)
+            {
+                r = new Random(seed.GetHashCode());
+            }
+
+            bool isComplete = false;
+
+            for (int i = 0; i < maze.GetLength(0); i++)
+            {
+                for (int j = 0; j < maze.GetLength(1); j++)
+                {
+                    if (i % 2 != 0 || j % 2 != 0)
+                    {
+                        maze[j, i] = -1;
+                    }
+                    else
+                    {
+                        maze[j, i] = counter;
+                        counter++;
+                    }
+                }
+            }
+
+            for (int i = 0; i < maze.GetLength(0); i++)
+            {
+                for (int j = 0; j < maze.GetLength(1); j++)
+                {
+                    if (j != maze.GetLength(0) - 1 && i != maze.GetLength(1) - 1)
+                    {
+                        if (maze[j, i] == -1 && (maze[j + 1, i] != -1 || maze[j, i + 1] != -1))
+                        {
+                            doubleInt n;
+
+                            n.x = j;
+                            n.y = i;
+
+                            edges.Add(n);
+                        }
+                    }
+                }
+            }
+
+            while (!isComplete)
+            {
+                doubleInt currEdge = edges[r.Next(0, edges.Count)];
+
+                if (maze[currEdge.x, currEdge.y + 1] == -1)
+                {
+                    if (maze[currEdge.x - 1, currEdge.y] != maze[currEdge.x + 1, currEdge.y])
+                    {
+                        maze[currEdge.x, currEdge.y] = maze[currEdge.x - 1, currEdge.y];
+                        for (int i = 0; i < maze.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < maze.GetLength(1); j++)
+                            {
+                                if (maze[j, i] == maze[currEdge.x + 1, currEdge.y])
+                                {
+                                    maze[j, i] = maze[currEdge.x, currEdge.y];
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        edges.Remove(currEdge);
+                    }
+                }
+
+                else if (maze[currEdge.x, currEdge.y - 1] != maze[currEdge.x, currEdge.y + 1])
+                {
+                    maze[currEdge.x, currEdge.y] = maze[currEdge.x, currEdge.y - 1];
+                    for (int i = 0; i < maze.GetLength(0); i++)
+                    {
+                        for (int j = 0; j < maze.GetLength(1); j++)
+                        {
+                            if (maze[j, i] == maze[currEdge.x, currEdge.y + 1])
+                            {
+                                maze[j, i] = maze[currEdge.x, currEdge.y];
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    edges.Remove(currEdge);
+                }
+
+                for (int i = 0; i < maze.GetLength(0) - 1; i++)
+                {
+                    for (int j = 0; j < maze.GetLength(1) - 1; j++)
+                    {
+                        if (maze[j, i] != -1 && maze[j + 1, i] != -1 && maze[j, i] != maze[j + 1, i])
+                        {
+                            for (int k = 0; k < maze.GetLength(0); k++)
+                            {
+                                for (int l = 0; l < maze.GetLength(1); l++)
+                                {
+                                    if (maze[l, k] == maze[j + 1, i])
+                                    {
+                                        maze[l, k] = maze[j, i];
+                                    }
+                                }
+                            }
+                        }
+                        else if (maze[j, i] != -1 && maze[j, i + 1] != -1 && maze[j, i] != maze[j, i + 1])
+                        {
+                            for (int k = 0; k < maze.GetLength(0); k++)
+                            {
+                                for (int l = 0; l < maze.GetLength(1); l++)
+                                {
+                                    if (maze[l, k] == maze[j, i + 1])
+                                    {
+                                        maze[l, k] = maze[j, i];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (edges.Count == 0)
+                {
+                    isComplete = true;
+                }
+            }
+
+            
+
+            if (size % 2 == 0)
+            {
+                for (int i = 0; i < maze.GetLength(1); i++)
+                {
+                    for (int j = 0; j < maze.GetLength(0); j++)
+                    {
+                        if (maze[j, i] == -1)
+                        {
+                            Maze[j + 1, i + 1] = "w";
+                        }
+                        else
+                        {
+                            Maze[j + 1, i + 1] = "f";
+                        }
+                    }
+                }
+
+                for (int i = 0; i < Maze.GetLength(0); i++)
+                {
+                    Maze[i, 0] = "w";
+                    Maze[0, i] = "w";
+                }
+            }
+
+            else
+            {
+                for (int i = 0; i < Maze.GetLength(0); i++)
+                {
+                    Maze[i, 0] = "w";
+                    Maze[0, i] = "w";
+                }
+                for (int i = 0; i < maze.GetLength(1); i++)
+                {
+                    for (int j = 0; j < maze.GetLength(0); j++)
+                    {
+                        if (maze[j, i] == -1)
+                        {
+                            Maze[j + 1, i + 1] = "w";
+                        }
+                        else
+                        {
+                            Maze[j + 1, i + 1] = "f";
+                        }
+                    }
+                }
             }
         }
 
@@ -395,7 +574,7 @@ namespace DungeonCrawler
 
         public Floor(int Size, string Seed)
         {
-            GenLevel(out maze, Size, Seed);
+            GenLevel(out Wall_Grid, Size, Seed);
         }
         
         public Floor()
@@ -404,13 +583,13 @@ namespace DungeonCrawler
 
         public void DrawLevel(SpriteBatch s, Texture2D wall, Texture2D floor, Player p)
         {
-            for (int i = 0; i < maze.GetLength(0); i++)
+            for (int i = 0; i < Wall_Grid.GetLength(0); i++)
             {
-                for (int j = 0; j < maze.GetLength(1); j++)
+                for (int j = 0; j < Wall_Grid.GetLength(1); j++)
                 {
                     if (j < p.playerPos.X + 5 && j > p.playerPos.X - 5 && i < p.playerPos.Y + 5 && i > p.playerPos.Y - 5)
                     {
-                        switch (maze[j, i].Substring(0,1))
+                        switch (Wall_Grid[j, i].Substring(0,1))
                         {
                             case "w":
                                 s.Draw(wall, new Rectangle(j * 32, i * 32, 32, 32), Color.White);
@@ -429,7 +608,7 @@ namespace DungeonCrawler
 
                     else
                     {
-                        switch (maze[j, i].Substring(0,1))
+                        switch (Wall_Grid[j, i].Substring(0,1))
                         {
                             case "w":
                                 s.Draw(wall, new Rectangle(j * 32, i * 32, 32, 32), Color.DarkGray);
