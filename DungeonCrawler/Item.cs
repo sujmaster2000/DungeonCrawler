@@ -16,10 +16,13 @@ namespace DungeonCrawler
 
         public int healthModifier;
         public int attackModifier;
+        public double blockModifier;
+
+        public Vector2 position;
 
         public SwordAbilitySet SAbilities;
 
-        public Item(Texture2D Front, Texture2D Back, Texture2D Left, Texture2D Right, int HealthModifier, int AttackModifier)
+        public Item(Texture2D Front, Texture2D Back, Texture2D Left, Texture2D Right, int HealthModifier, int AttackModifier, double BlockModifier)
         {
             Textures = new Texture2D[4];
 
@@ -30,9 +33,10 @@ namespace DungeonCrawler
 
             healthModifier = HealthModifier;
             attackModifier = AttackModifier;
+            blockModifier = BlockModifier;
         }
 
-        public Item(Texture2D Front, Texture2D Back, Texture2D Left, Texture2D Right, int HealthModifier, int AttackModifier, string WeaponType, SwordAbilitySet abilities)
+        public Item(Texture2D Front, Texture2D Back, Texture2D Left, Texture2D Right, int HealthModifier, int AttackModifier, double BlockModifier, string WeaponType, SwordAbilitySet abilities)
         {
             Textures = new Texture2D[4];
 
@@ -43,6 +47,7 @@ namespace DungeonCrawler
 
             healthModifier = HealthModifier;
             attackModifier = AttackModifier;
+            blockModifier = BlockModifier;
 
             switch (WeaponType)
             {

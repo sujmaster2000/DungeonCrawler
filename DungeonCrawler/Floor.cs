@@ -26,7 +26,7 @@ namespace DungeonCrawler
             public int y;
         }
 
-        public static void KrusukalLevel(out string[,] Maze, int size, string seed)
+        public static void KrusukalLevel(out string[,] Maze, ref string[,] EntranceExit_Grid, int size, string seed)
         {
             if (size % 2 == 0)
             {
@@ -39,6 +39,17 @@ namespace DungeonCrawler
 
 
             int[,] maze = new int[size, size];
+
+            EntranceExit_Grid = new string[Maze.GetLength(0), Maze.GetLength(1)];
+
+            for (int i = 0; i < Maze.GetLength(0); i++ )
+            {
+                for (int j = 0; j < Maze.GetLength(1); j++)
+                {
+                    EntranceExit_Grid[j, i] = " ";
+                }
+            }
+
             List<doubleInt> edges = new List<doubleInt>();
 
             int counter = 0;
@@ -217,6 +228,42 @@ namespace DungeonCrawler
                             Maze[j + 1, i + 1] = "f";
                         }
                     }
+                }
+            }
+
+            bool exitIsPlaced = false;
+
+            while (!exitIsPlaced)
+            {
+                int x = r.Next(0, Maze.GetLength(0));
+                int y = r.Next(0, Maze.GetLength(1));
+
+                if (Maze[x, y] != "w")
+                {
+                    int AdjacentWallCount = 0;
+                    
+                    if (Maze[x + 1, y] == "w")
+                    {
+                        AdjacentWallCount++;
+                    }
+                    if (Maze[x - 1, y] == "w")
+                    {
+                        AdjacentWallCount++;
+                    }
+                    if (Maze[x, y + 1] == "w")
+                    {
+                        AdjacentWallCount++;
+                    }
+                    if (Maze[x, y - 1] == "w")
+                    {
+                        AdjacentWallCount++;
+                    }
+                    if (AdjacentWallCount == 3)
+                    {
+                        EntranceExit_Grid[x, y] = "exit";
+                        exitIsPlaced = true;
+                    }
+
                 }
             }
         }
@@ -574,19 +621,20 @@ namespace DungeonCrawler
 
         public Floor(int Size, string Seed)
         {
-            GenLevel(out Wall_Grid, Size, Seed);
+            KrusukalLevel(out Wall_Grid, ref EntranceExit_Grid, Size, Seed);
         }
         
         public Floor()
         { 
         }
 
-        public void DrawLevel(SpriteBatch s, Texture2D wall, Texture2D floor, Player p)
+        public void DrawLevel(SpriteBatch s, Texture2D wall, Texture2D floor, Texture2D Exit, Player p)
         {
             for (int i = 0; i < Wall_Grid.GetLength(0); i++)
             {
                 for (int j = 0; j < Wall_Grid.GetLength(1); j++)
                 {
+
                     if (j < p.playerPos.X + 5 && j > p.playerPos.X - 5 && i < p.playerPos.Y + 5 && i > p.playerPos.Y - 5)
                     {
                         switch (Wall_Grid[j, i].Substring(0,1))
@@ -603,6 +651,11 @@ namespace DungeonCrawler
                             case "e":
                                 s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.White);
                                 break;
+                        }
+
+                        if (EntranceExit_Grid[j, i] == "exit")
+                        {
+                            s.Draw(Exit, new Rectangle(j * 32, i * 32, 32, 32), Color.White);
                         }
                     }
 
@@ -624,6 +677,9 @@ namespace DungeonCrawler
                                 break;
                         }
                     }
+
+
+                    
                 }
             }
         }

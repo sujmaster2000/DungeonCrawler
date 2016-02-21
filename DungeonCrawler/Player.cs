@@ -29,7 +29,9 @@ namespace DungeonCrawler
 
         public int Health = 300;
 
-        public int AttackDamage = 0;
+        public int Attack = 0;
+
+        public double Block = 0;
 
         public Player()
         {
@@ -44,11 +46,12 @@ namespace DungeonCrawler
             Equiped[2] = Legs;
             Equiped[3] = Weapon;
 
-            AttackDamage += Head.attackModifier + Body.attackModifier + Legs.attackModifier + Weapon.attackModifier;
+            Attack += Head.attackModifier + Body.attackModifier + Legs.attackModifier + Weapon.attackModifier;
             Health += Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier;
+            Block += Head.blockModifier + Body.blockModifier + Legs.blockModifier + Weapon.blockModifier;
         }
 
-        public void update(string[,] Maze, GameTime g, Game1 game, out bool hasPerformedAction, List<Enemy> Enemies, ref List<HealthPotion> HPotions,SoundEffect attack, SoundEffect step)
+        public void update(Floor f, GameTime g, Game1 game, out bool hasPerformedAction, List<Enemy> Enemies, ref List<HealthPotion> HPotions,SoundEffect attack, SoundEffect step, ref string GameState)
         {
             hasPerformedAction = false;
             KeyboardState k = Keyboard.GetState();
@@ -57,7 +60,7 @@ namespace DungeonCrawler
                 if (k.IsKeyDown(Keys.D))
                 {
                     direction = 'r';
-                    if (Maze[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "w" && Maze[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
+                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
                     {
                         playerPos.X += 1;
                         hasPerformedAction = true;
@@ -68,7 +71,7 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.A))
                 {
                     direction = 'l';
-                    if (Maze[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "w" && Maze[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
+                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
                     {
                         playerPos.X -= 1;
                         hasPerformedAction = true;
@@ -79,7 +82,7 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.S))
                 {
                     direction = 'd';
-                    if(Maze[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "w" && Maze[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
+                    if(f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
                     {
                         playerPos.Y += 1;
                         hasPerformedAction = true;
@@ -90,7 +93,7 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.W))
                 {
                     direction = 'u';
-                    if (Maze[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "w" && Maze[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
+                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
                     {
                         playerPos.Y -= 1;
                         hasPerformedAction = true;
@@ -157,7 +160,7 @@ namespace DungeonCrawler
                 if (k.IsKeyDown(Keys.D))
                 {
                     direction = 'r';
-                    if (Maze[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "w" && Maze[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "e" && !Dpressed)
+                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "e" && !Dpressed)
                     {
                         playerPos.X += 1;
                         hasPerformedAction = true;
@@ -169,7 +172,7 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.A))
                 {
                     direction = 'l';
-                    if (Maze[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "w" && Maze[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "e" && !Apressed)
+                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "e" && !Apressed)
                     {
                         playerPos.X -= 1;
                         hasPerformedAction = true;
@@ -181,7 +184,7 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.S))
                 {
                     direction = 'd';
-                    if (Maze[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "w" && Maze[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "e" && !Spressed)
+                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "e" && !Spressed)
                     {
                         playerPos.Y += 1;
                         hasPerformedAction = true;
@@ -193,7 +196,7 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.W))
                 {
                     direction = 'u';
-                    if (Maze[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "w" && Maze[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "e" && !Wpressed)
+                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "e" && !Wpressed)
                     {
                         playerPos.Y -= 1;
                         hasPerformedAction = true;
@@ -205,28 +208,33 @@ namespace DungeonCrawler
                 
                 else if (k.IsKeyDown(Keys.D1) && !OnePressed)
                 {
-                    Equiped[3].SAbilities.Skill1(ref Enemies, this, game, Maze);
+                    Equiped[3].SAbilities.Skill1(ref Enemies, this, game, f.Wall_Grid);
                     OnePressed = true;
                 }
 
                 else if (k.IsKeyDown(Keys.D2) && !TwoPressed)
                 {
-                    Equiped[3].SAbilities.Skill2(ref Enemies, this, game, Maze);
+                    Equiped[3].SAbilities.Skill2(ref Enemies, this, game, f.Wall_Grid);
                     TwoPressed = true;
                 }
                 else if (k.IsKeyDown(Keys.D3) && !ThreePressed)
                 {
-                    Equiped[3].SAbilities.Skill3(ref Enemies, this, game, Maze);
+                    Equiped[3].SAbilities.Skill3(ref Enemies, this, game, f.Wall_Grid);
                     ThreePressed = true;
                 }
 
             }
    
-            if (Maze[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(0,1) == "h")
+            if (f.Wall_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(0,1) == "h")
             {
-                Health += 200;
-                HPotions[Convert.ToInt32(Maze[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(1, 1))].hasBeenConsumed = true;
-                Maze[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] = "f";
+                Health += 20;
+                HPotions[Convert.ToInt32(f.Wall_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(1, 1))].hasBeenConsumed = true;
+                f.Wall_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] = "f";
+            }
+
+            if (f.EntranceExit_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] == "exit")
+            {
+                GameState = "genLevel";
             }
         }
 

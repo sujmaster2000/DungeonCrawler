@@ -83,7 +83,6 @@
   <ItemGroup>
     <Compile Include="Button.cs" />
     <Compile Include="Camera.cs" />
-    <Compile Include="init_Game.cs" />
     <Compile Include="MainMenu.cs" />
     <Compile Include="MessageHandler.cs" />
     <Compile Include="SwordAbilitySet.cs" />
@@ -169,6 +168,9 @@
     <Content Include="Content\Left_Weapon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Loading.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Options.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -182,6 +184,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Right_Weapon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Staircase.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\StartGame.png">

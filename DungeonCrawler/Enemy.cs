@@ -21,12 +21,18 @@ namespace DungeonCrawler
         public char direction;
 
         public int health;
+        public int attackDamage;
+        public double block;
 
         public Enemy (Vector2 Pos, Item Head, Item Body, Item Legs, Item Weapon)
         {
             pos = Pos;
             rect = new Rectangle(Convert.ToInt32(pos.X * 32), Convert.ToInt32(pos.Y * 32), 32, 32);
+
             health = 20 + (Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier);
+            attackDamage = Head.attackModifier + Body.attackModifier + Legs.attackModifier + Weapon.attackModifier;
+            block = Head.blockModifier + Body.blockModifier + Legs.blockModifier + Weapon.blockModifier;
+
             Equiped.Add(Head);
             Equiped.Add(Body);
             Equiped.Add(Legs);
@@ -49,7 +55,11 @@ namespace DungeonCrawler
             }
 
             rect = new Rectangle(Convert.ToInt32(pos.X * 32), Convert.ToInt32(pos.Y * 32), 32, 32);
+
             health = 20 + (Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier);
+            attackDamage = Head.attackModifier + Body.attackModifier + Legs.attackModifier + Weapon.attackModifier;
+            block = Head.blockModifier + Body.blockModifier + Legs.blockModifier + Weapon.blockModifier;
+
             Equiped.Add(Head);
             Equiped.Add(Body);
             Equiped.Add(Legs);
@@ -80,7 +90,7 @@ namespace DungeonCrawler
                 {
                     for (int j = 0; j < Maze.GetLength(1); j++)
                     {
-                        if (Maze[j, i] == "f" || Maze[j, i].Substring(0,1) == "h" || Maze[j,i] == "e")
+                        if (Maze[j, i] == "f" || Maze[j, i].Substring(0,1) == "h" || Maze[j,i].Substring(0,1) == "e")
                         {
                             maze[j, i, 0] = 999;
                         }
@@ -181,9 +191,23 @@ namespace DungeonCrawler
             }   
         }
 
-        public void attack(Player p)
+        public void attack(Player p, ref MessageHandler Messages)
         {
-            p.Health -= health/4;
+            double toBlock = 100 - (200 / p.Block);
+
+            Random r = new Random();
+
+            double BlockRoll = (double) (r.Next(0,100) - r.NextDouble());
+
+            if (BlockRoll > toBlock)
+            {
+                p.Health -= attackDamage;
+            }
+
+            else
+            {
+                Messages.AddMessage("BLOCKED!");
+            }
         }
 
         public void draw(SpriteBatch s, Texture2D t, SpriteFont f, Player p)

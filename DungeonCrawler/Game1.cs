@@ -49,6 +49,8 @@ namespace DungeonCrawler
 
         public bool HasMoved = false;
 
+        public int floorNum;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -112,12 +114,16 @@ namespace DungeonCrawler
                     System.Environment.Exit(1);
                     break;
                 case "init_game":
+                    HPotions = new List<HealthPotion>();
+                    GEnemies = new List<Enemy>();
                     IsMouseVisible = true;
+
+                    floorNum = 1;
 
                     r = new Random();
 
                     // TODO: Add your initialization logic here
-                    test = new Floor(21, null);
+                    test = new Floor(20, null);
 
                     for (int i = 0; i < 5; i++)
                     {
@@ -146,23 +152,59 @@ namespace DungeonCrawler
                     healthPotion = Content.Load<Texture2D>("HealthPotion.png");
                     attack = Content.Load<SoundEffect>("AttackSound");
                     step = Content.Load<SoundEffect>("Step");
-                    player = new Player(new Vector2(1, 1), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4),
-             new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2),
-             new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2),
-             new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet(attack, attack, attack)));
 
-                    for (int i = 0; i < 15; i++)
+                    player = new Player(new Vector2(1, 1), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4, 1),
+             new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2, 1),
+             new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2, 1),
+             new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, 1, "sword", new SwordAbilitySet(attack, attack, attack)));
+
+                    for (int i = 0; i < floorNum * 3; i++)
                     {
-                        Enemy e = new Enemy(test.Wall_Grid, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4),
-            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2),
-            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2),
-            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet(attack, attack, attack)));
+                        Enemy e = new Enemy(test.Wall_Grid, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), floorNum * 3, floorNum, 0),
+            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), floorNum * 3, floorNum, 0),
+            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), floorNum * 3, floorNum, 0),
+            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, floorNum * 5, 0, "sword", new SwordAbilitySet(attack, attack, attack)));
                         GEnemies.Insert(i, e);
-
-
                     }
 
                     Messages = new MessageHandler(new Vector2(player.playerPos.X * 32 + 150, player.playerPos.Y * 32 - 360));
+                    gameState = "inGame";
+                    break;
+
+                case "genLevel":
+
+                    floorNum++;
+
+                    GEnemies = new List<Enemy>();
+                    HPotions = new List<HealthPotion>();
+
+                    for (int i = 0; i < 5; i++)
+                    {
+                        HealthPotion h = new HealthPotion(r, test.Wall_Grid);
+                        HPotions.Insert(i, h);
+                    }
+
+                    test = new Floor(20, null);
+
+                    for (int i = 0; i < floorNum * 3; i++)
+                    {
+                        Enemy e = new Enemy(test.Wall_Grid, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), floorNum * 3, floorNum, 0),
+            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), floorNum * 3, floorNum, 0),
+            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), floorNum * 3, floorNum, 0),
+            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, floorNum * 5, 0, "sword", new SwordAbilitySet(attack, attack, attack)));
+                        GEnemies.Insert(i, e);
+                    }
+
+                    foreach (HealthPotion i in HPotions)
+                    {
+                        if (!i.hasBeenConsumed)
+                        {
+                            test.Wall_Grid[Convert.ToInt32(i.pos.X), Convert.ToInt32(i.pos.Y)] = "h" + HPotions.IndexOf(i).ToString();
+                        }
+                    }
+
+                    player.playerPos = new Vector2(1, 1);
+
                     gameState = "inGame";
                     break;
                 case "mainMenu":
@@ -210,17 +252,17 @@ namespace DungeonCrawler
                     }
                     if (k.IsKeyDown(Keys.E))
                     {
-                        GEnemies.Add(new Enemy(test.Wall_Grid, new Random(), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4),
-            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2),
-            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2),
-            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, "sword", new SwordAbilitySet(attack, attack, attack))));
+                        GEnemies.Add(new Enemy(test.Wall_Grid, new Random(), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4, 0),
+            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2, 0),
+            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2, 0),
+            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, 0, "sword", new SwordAbilitySet(attack, attack, attack))));
                         player.Epressed = true;
                     }
 
 
                     m.Update();
 
-                    player.update(test.Wall_Grid, gameTime, this, out HasMoved, GEnemies, ref HPotions, attack, step);
+                    player.update(test, gameTime, this, out HasMoved, GEnemies, ref HPotions, attack, step, ref gameState);
 
                     if (HasMoved == true)
                     {
@@ -243,22 +285,22 @@ namespace DungeonCrawler
                     {
                         if (e.pos.X == player.playerPos.X + 1 && e.pos.Y == player.playerPos.Y && player.hasAttacked && !e.hasAttacked)
                         {
-                            e.attack(player);
+                            e.attack(player, ref Messages);
                             e.hasAttacked = true;
                         }
                         else if (e.pos.X == player.playerPos.X - 1 && e.pos.Y == player.playerPos.Y && player.hasAttacked && !e.hasAttacked)
                         {
-                            e.attack(player);
+                            e.attack(player, ref Messages);
                             e.hasAttacked = true;
                         }
                         else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y + 1 && player.hasAttacked && !e.hasAttacked)
                         {
-                            e.attack(player);
+                            e.attack(player, ref Messages);
                             e.hasAttacked = true;
                         }
                         else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y - 1 && player.hasAttacked && !e.hasAttacked)
                         {
-                            e.attack(player);
+                            e.attack(player, ref Messages);
                             e.hasAttacked = true;
                         }
 
@@ -290,6 +332,16 @@ namespace DungeonCrawler
             GraphicsDevice.Clear(Color.Black);
             switch (gameState)
             {
+                case "genLevel":
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(Content.Load<Texture2D>("Loading.png"), new Vector2(0, 0), Color.White);
+                    spriteBatch.End();
+                    break;
+                case "init_game":
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(Content.Load<Texture2D>("Loading.png"), new Vector2(0, 0), Color.White);
+                    spriteBatch.End();
+                    break;
                 case "mainMenu":
                     spriteBatch.Begin();
                     mainMenu.Draw(spriteBatch, this.graphics);
@@ -299,7 +351,7 @@ namespace DungeonCrawler
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.transform);
                     fps.frameCounter++;
 
-                    test.DrawLevel(spriteBatch, wall, floor, player);
+                    test.DrawLevel(spriteBatch, wall, floor, Content.Load<Texture2D>("Staircase.png"), player);
 
                     foreach (HealthPotion i in HPotions)
                     {
