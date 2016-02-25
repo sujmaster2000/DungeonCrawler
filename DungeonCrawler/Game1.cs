@@ -127,7 +127,7 @@ namespace DungeonCrawler
 
                     for (int i = 0; i < 5; i++)
                     {
-                        HealthPotion h = new HealthPotion(r, test.Wall_Grid);
+                        HealthPotion h = new HealthPotion(r, test);
                         HPotions.Insert(i, h);
                     }
 
@@ -136,12 +136,12 @@ namespace DungeonCrawler
                     fps = new FrameRateCounter();
 
                     m = new MouseHandler();
-
+                    
                     foreach (HealthPotion i in HPotions)
                     {
                         if (!i.hasBeenConsumed)
                         {
-                            test.Wall_Grid[Convert.ToInt32(i.pos.X), Convert.ToInt32(i.pos.Y)] = "h" + HPotions.IndexOf(i).ToString();
+                            test.HP_Grid[Convert.ToInt32(i.pos.X), Convert.ToInt32(i.pos.Y)] = "h" + HPotions.IndexOf(i).ToString();
                         }
                     }
 
@@ -180,7 +180,7 @@ namespace DungeonCrawler
 
                     for (int i = 0; i < 5; i++)
                     {
-                        HealthPotion h = new HealthPotion(r, test.Wall_Grid);
+                        HealthPotion h = new HealthPotion(r, test);
                         HPotions.Insert(i, h);
                     }
 
@@ -199,7 +199,7 @@ namespace DungeonCrawler
                     {
                         if (!i.hasBeenConsumed)
                         {
-                            test.Wall_Grid[Convert.ToInt32(i.pos.X), Convert.ToInt32(i.pos.Y)] = "h" + HPotions.IndexOf(i).ToString();
+                            test.HP_Grid[Convert.ToInt32(i.pos.X), Convert.ToInt32(i.pos.Y)] = "h" + HPotions.IndexOf(i).ToString();
                         }
                     }
 
@@ -213,6 +213,11 @@ namespace DungeonCrawler
                 case "inGame":
                     if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                         Exit();
+
+                    if (player.Health <= 0)
+                    {
+                        gameState = "GameOver";
+                    }
 
                     Messages.Update(new Vector2(player.playerPos.X * 32 + 150, player.playerPos.Y * 32 - 360));
 
@@ -332,6 +337,11 @@ namespace DungeonCrawler
             GraphicsDevice.Clear(Color.Black);
             switch (gameState)
             {
+                case "GameOver":
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(Content.Load<Texture2D>("GameOver.png"), new Vector2(0, 0), Color.Red);
+                    spriteBatch.End();
+                    break;
                 case "genLevel":
                     spriteBatch.Begin();
                     spriteBatch.Draw(Content.Load<Texture2D>("Loading.png"), new Vector2(0, 0), Color.White);

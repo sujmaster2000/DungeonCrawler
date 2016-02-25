@@ -23,7 +23,7 @@ with.
     the size of the font.
     -->
     
-<Size>10</Size>
+<Size>15</Size>
 
     <!--
     Spacing is a float value, measured in pixels. Modify this value to change
@@ -44,7 +44,7 @@ with.
     and "Bold, Italic", and are case sensitive.
     -->
     
-<Style>Regular</Style>
+<Style>Bold</Style>
 
     
 <!--

@@ -147,6 +147,9 @@
     <Content Include="Content\Front_Weapon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\GameOver.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\HealthPotion.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

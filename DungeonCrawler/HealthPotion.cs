@@ -18,16 +18,16 @@ namespace DungeonCrawler
 
         }
 
-        public HealthPotion(Random r, string[,] Maze)
+        public HealthPotion(Random r, Floor f)
         {
             bool validPos = false;
 
             while (!validPos)
             {
-                pos.X = r.Next(1, Maze.GetLength(0) - 1);
-                pos.Y = r.Next(1, Maze.GetLength(1) - 1);
+                pos.X = r.Next(1, f.Wall_Grid.GetLength(0) - 1);
+                pos.Y = r.Next(1, f.Wall_Grid.GetLength(1) - 1);
 
-                if (Maze[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == "f")
+                if (f.Wall_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == "f")
                 {
                     validPos = true;
                 }

@@ -225,11 +225,11 @@ namespace DungeonCrawler
 
             }
    
-            if (f.Wall_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(0,1) == "h")
+            if (f.HP_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(0,1) == "h")
             {
-                Health += 20;
+                Health += 50;
                 HPotions[Convert.ToInt32(f.Wall_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(1, 1))].hasBeenConsumed = true;
-                f.Wall_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] = "f";
+                f.HP_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] = " ";
             }
 
             if (f.EntranceExit_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] == "exit")
