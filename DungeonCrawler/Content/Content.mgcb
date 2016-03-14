@@ -31,3 +31,15 @@
 /processorParam:Quality=Best
 /build:Step.mp3
 
+#begin ed.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:ed.spritefont
+
+#begin test.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:test.spritefont
+

@@ -13,8 +13,10 @@ namespace DungeonCrawler
         public Vector2 pos;
         public Vector2 prevPos;
         public Rectangle rect;
+
         public bool isAlive = true;
         public bool hasAttacked = false;
+        public bool hasDroppedItem = false;
 
         public List<Item> Equiped = new List<Item>();
 
@@ -71,12 +73,29 @@ namespace DungeonCrawler
 
         }
 
-        public void Update(Player p, string[,] Maze)
+
+
+        public void Update(Player p, Floor Maze, ref Dictionary<int, Item> droppedItems, Game1 g, Random r)
         {
-            if (health <=0)
+            if (health <=0 && hasDroppedItem == false)
             {
                 isAlive = false;
                 health = 0;
+                if (r.Next(0, 100) < 35)
+                {
+                    Item item = g.randItem(r, pos);
+                    droppedItems.Add(droppedItems.Count, item);
+                    int index = droppedItems.First(x => x.Value == item).Key;
+                    if (Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == " ")
+                    {
+                        Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] = "i" + index;
+                    }
+                    else
+                    {
+                        Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] += index;
+                    }
+                }
+                hasDroppedItem = true;
             }
 
             if (isAlive == true)
@@ -84,13 +103,13 @@ namespace DungeonCrawler
                 prevPos = pos;
                 int[, ,] maze;
 
-                maze = new int[Maze.GetLength(0), Maze.GetLength(1), 3];
+                maze = new int[Maze.Wall_Grid.GetLength(0), Maze.Wall_Grid.GetLength(1), 3];
 
-                for (int i = 0; i < Maze.GetLength(0); i++)
+                for (int i = 0; i < Maze.Wall_Grid.GetLength(0); i++)
                 {
-                    for (int j = 0; j < Maze.GetLength(1); j++)
+                    for (int j = 0; j < Maze.Wall_Grid.GetLength(1); j++)
                     {
-                        if (Maze[j, i] == "f" || Maze[j, i].Substring(0,1) == "h" || Maze[j,i].Substring(0,1) == "e")
+                        if (Maze.Wall_Grid[j, i] == "f" || Maze.Wall_Grid[j, i].Substring(0,1) == "h" || Maze.Wall_Grid[j,i].Substring(0,1) == "e")
                         {
                             maze[j, i, 0] = 999;
                         }
@@ -157,14 +176,14 @@ namespace DungeonCrawler
                     }
                 }
 
-                int[,] path = new int[maze[Convert.ToInt32(p.playerPos.X), Convert.ToInt32(p.playerPos.Y), 0], 2];
+                int[,] path = new int[maze[Convert.ToInt32(p.pos.X), Convert.ToInt32(p.pos.Y), 0], 2];
 
                 //endpoint coordinates
-                int sX = Convert.ToInt32(p.playerPos.X);
-                int sY = Convert.ToInt32(p.playerPos.Y);
+                int sX = Convert.ToInt32(p.pos.X);
+                int sY = Convert.ToInt32(p.pos.Y);
 
                 //starts at the end and works backwards to the origin
-                for (int i = maze[Convert.ToInt32(p.playerPos.X), Convert.ToInt32(p.playerPos.Y), 0] - 1; i > -1; i--)
+                for (int i = maze[Convert.ToInt32(p.pos.X), Convert.ToInt32(p.pos.Y), 0] - 1; i > -1; i--)
                 {
                     path[i, 0] = sX;
                     path[i, 1] = sY;
@@ -176,7 +195,7 @@ namespace DungeonCrawler
                 }
                 try
                 {
-                    if (path.GetLength(0) != 1 && Maze[Convert.ToInt32(path[0, 0]), Convert.ToInt32(path[0, 1])] != "e")
+                    if (path.GetLength(0) != 1 && Maze.Wall_Grid[Convert.ToInt32(path[0, 0]), Convert.ToInt32(path[0, 1])] != "e")
                     {
                         rect.X = path[0, 0] * 32;
                         rect.Y = path[0, 1] * 32;
@@ -212,7 +231,7 @@ namespace DungeonCrawler
 
         public void draw(SpriteBatch s, Texture2D t, SpriteFont f, Player p)
         {
-            if (pos.X < p.playerPos.X + 5 && pos.X > p.playerPos.X - 5 && pos.Y < p.playerPos.Y + 5 && pos.Y > p.playerPos.Y - 5 && isAlive)
+            if (pos.X < p.pos.X + 5 && pos.X > p.pos.X - 5 && pos.Y < p.pos.Y + 5 && pos.Y > p.pos.Y - 5 && isAlive)
             {/*
                 s.Draw(t, rect, Color.White);
                 s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);*/
@@ -241,41 +260,44 @@ namespace DungeonCrawler
                 {
                     case 'd':
                         {
-                            s.Draw(Equiped[0].Textures[0], pos * 32, Color.Red);
-                            s.Draw(Equiped[1].Textures[0], pos * 32, Color.Red);
-                            s.Draw(Equiped[2].Textures[0], pos * 32, Color.Red);
-                            s.Draw(Equiped[3].Textures[0], pos * 32, Color.Red);
+
+                            s.Draw(Equiped[0].Textures[0], pos * 32, Equiped[0].color);
+                            s.Draw(Equiped[1].Textures[0], pos * 32, Equiped[1].color);
+                            s.Draw(Equiped[2].Textures[0], pos * 32, Equiped[2].color);
+                            s.Draw(Equiped[3].Textures[0], pos * 32, Equiped[3].color);
                             s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
                             break;
                         }
                     case 'u':
                         {
-                            s.Draw(Equiped[3].Textures[1], pos * 32, Color.Red);
-                            s.Draw(Equiped[0].Textures[1], pos * 32, Color.Red);
-                            s.Draw(Equiped[1].Textures[1], pos * 32, Color.Red);
-                            s.Draw(Equiped[2].Textures[1], pos * 32, Color.Red);
+                            s.Draw(Equiped[3].Textures[1], pos * 32, Equiped[0].color);
+                            s.Draw(Equiped[0].Textures[1], pos * 32, Equiped[1].color);
+                            s.Draw(Equiped[1].Textures[1], pos * 32, Equiped[2].color);
+                            s.Draw(Equiped[2].Textures[1], pos * 32, Equiped[3].color);
                             s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+
                             break;
                         }
                     case 'l':
                         {
-                            s.Draw(Equiped[0].Textures[2], pos * 32, Color.Red);
-                            s.Draw(Equiped[1].Textures[2], pos * 32, Color.Red);
-                            s.Draw(Equiped[2].Textures[2], pos * 32, Color.Red);
-                            s.Draw(Equiped[3].Textures[2], pos * 32, Color.Red);
+                            s.Draw(Equiped[0].Textures[2], pos * 32, Equiped[0].color);
+                            s.Draw(Equiped[1].Textures[2], pos * 32, Equiped[1].color);
+                            s.Draw(Equiped[2].Textures[2], pos * 32, Equiped[2].color);
+                            s.Draw(Equiped[3].Textures[2], pos * 32, Equiped[3].color);
                             s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
                             break;
                         }
                     case 'r':
                         {
-                            s.Draw(Equiped[0].Textures[3], pos * 32, Color.Red);
-                            s.Draw(Equiped[1].Textures[3], pos * 32, Color.Red);
-                            s.Draw(Equiped[2].Textures[3], pos * 32, Color.Red);
-                            s.Draw(Equiped[3].Textures[3], pos * 32, Color.Red);
+                            s.Draw(Equiped[0].Textures[3], pos * 32, Equiped[0].color);
+                            s.Draw(Equiped[1].Textures[3], pos * 32, Equiped[1].color);
+                            s.Draw(Equiped[2].Textures[3], pos * 32, Equiped[2].color);
+                            s.Draw(Equiped[3].Textures[3], pos * 32, Equiped[3].color);
                             s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
                             break;
                         }
                 }
+                
             }
         }
     }

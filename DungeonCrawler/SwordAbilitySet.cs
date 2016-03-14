@@ -24,6 +24,7 @@ namespace DungeonCrawler
         public int Skill2_Cooldown = 0;
         public int Skill3_Cooldown = 0;
 
+        //Initizalizes the textures in the object
         public SwordAbilitySet(Texture2D icon1, Texture2D icon2, Texture2D icon3, Texture2D icon4)
         {
             Skill1_icon = icon1;
@@ -32,6 +33,7 @@ namespace DungeonCrawler
             Skill4_icon = icon4;
         }
 
+        //Initializes the soundeffect
         public SwordAbilitySet(SoundEffect skill1_Soundeffect, SoundEffect skill2_Soundeffect, SoundEffect skill3_Soundeffect)
         {
             Skill1_Soundeffect = skill1_Soundeffect;
@@ -43,7 +45,7 @@ namespace DungeonCrawler
         {
 
         }
-
+        //Skill1 effects
         public void Skill1(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
         {
             UpdateCooldown(p);
@@ -54,7 +56,7 @@ namespace DungeonCrawler
                     {
                         foreach (Enemy e in Enemies)
                         {
-                            if (new Vector2(p.playerPos.X, p.playerPos.Y + 1) == e.pos && e.health > 0)
+                            if (new Vector2(p.pos.X, p.pos.Y + 1) == e.pos && e.health > 0)
                             {
                                 e.health -= p.Attack;
                             }
@@ -71,7 +73,7 @@ namespace DungeonCrawler
                     {
                         foreach (Enemy e in Enemies)
                         {
-                            if (new Vector2(p.playerPos.X, p.playerPos.Y - 1) == e.pos && e.health > 0)
+                            if (new Vector2(p.pos.X, p.pos.Y - 1) == e.pos && e.health > 0)
                             {
                                 e.health -= p.Attack;
                             }
@@ -88,7 +90,7 @@ namespace DungeonCrawler
                     {
                         foreach (Enemy e in Enemies)
                         {
-                            if (new Vector2(p.playerPos.X - 1, p.playerPos.Y) == e.pos && e.health > 0)
+                            if (new Vector2(p.pos.X - 1, p.pos.Y) == e.pos && e.health > 0)
                             {
                                 e.health -= p.Attack;
                             }
@@ -106,7 +108,7 @@ namespace DungeonCrawler
                     {
                         foreach (Enemy e in Enemies)
                         {
-                            if (new Vector2(p.playerPos.X + 1, p.playerPos.Y) == e.pos && e.health > 0)
+                            if (new Vector2(p.pos.X + 1, p.pos.Y) == e.pos && e.health > 0)
                             {
                                 e.health -= p.Attack;
                             }
@@ -126,6 +128,7 @@ namespace DungeonCrawler
             Skill1_Soundeffect.Play();
         }
 
+        //Skill2 effects
         public void Skill2(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
         {
             game.HasMoved = true;
@@ -138,7 +141,7 @@ namespace DungeonCrawler
                         {
                             foreach (Enemy e in Enemies)
                             {
-                                if (p.playerPos.X == e.pos.X && e.pos.Y < p.playerPos.Y + 5 && e.pos.Y > p.playerPos.Y && e.health > 0)
+                                if (p.pos.X == e.pos.X && e.pos.Y < p.pos.Y + 5 && e.pos.Y > p.pos.Y && e.health > 0)
                                 {
                                     e.health -= p.Attack;
                                 }
@@ -155,7 +158,7 @@ namespace DungeonCrawler
                         {
                             foreach (Enemy e in Enemies)
                             {
-                                if (p.playerPos.X == e.pos.X && e.pos.Y < p.playerPos.Y && e.pos.Y > p.playerPos.Y - 5 && e.health > 0)
+                                if (p.pos.X == e.pos.X && e.pos.Y < p.pos.Y && e.pos.Y > p.pos.Y - 5 && e.health > 0)
                                 {
                                     e.health -= p.Attack;
                                 }
@@ -172,7 +175,7 @@ namespace DungeonCrawler
                         {
                             foreach (Enemy e in Enemies)
                             {
-                                if (p.playerPos.Y == e.pos.Y && e.pos.X < p.playerPos.X && e.pos.X > p.playerPos.X - 5 && e.health > 0)
+                                if (p.pos.Y == e.pos.Y && e.pos.X < p.pos.X && e.pos.X > p.pos.X - 5 && e.health > 0)
                                 {
                                     e.health -= p.Attack;
                                 }
@@ -190,7 +193,7 @@ namespace DungeonCrawler
                         {
                             foreach (Enemy e in Enemies)
                             {
-                                if (p.playerPos.Y == e.pos.Y && e.pos.X < p.playerPos.X + 5 && e.pos.X > p.playerPos.X && e.health > 0)
+                                if (p.pos.Y == e.pos.Y && e.pos.X < p.pos.X + 5 && e.pos.X > p.pos.X && e.health > 0)
                                 {
                                     e.health -= p.Attack;
                                 }
@@ -211,6 +214,7 @@ namespace DungeonCrawler
                 Skill2_Soundeffect.Play();
             }
         }
+        //Skill 3 effects
         public void Skill3(ref List<Enemy> Enemies, Player p, Game1 game, string[,] Maze)
         {
             UpdateCooldown(p);
@@ -219,7 +223,7 @@ namespace DungeonCrawler
             {
                 foreach (Enemy e in Enemies)
                 {
-                    if (e.pos.X < p.playerPos.X + 3 && e.pos.X > p.playerPos.X - 3 && e.pos.Y < p.playerPos.Y + 3 && e.pos.Y > p.playerPos.Y - 3)
+                    if (e.pos.X < p.pos.X + 3 && e.pos.X > p.pos.X - 3 && e.pos.Y < p.pos.Y + 3 && e.pos.Y > p.pos.Y - 3)
                     {
                         e.health -= p.Attack / 2;
                     }
@@ -239,7 +243,7 @@ namespace DungeonCrawler
                 Skill3_Soundeffect.Play();
             }
         }
-
+        //Updates the cooldown values for each skill
         public void UpdateCooldown(Player p)
         {
             Skill1_Cooldown -= 1;

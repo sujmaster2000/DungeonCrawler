@@ -26,7 +26,9 @@ namespace DungeonCrawler
             public int y;
         }
 
-        public static void KrusukalLevel(out string[,] Maze, ref string[,] EntranceExit_Grid, ref string[,] HP_Grid,int size, string seed)
+        //Generates a Maze with randomized krusukal's algorithm
+
+        public static void KrusukalLevel(out string[,] Maze, ref string[,] EntranceExit_Grid, ref string[,] HP_Grid, ref string[,] Item_Grid, int size, string seed)
         {
             if (size % 2 == 0)
             {
@@ -42,6 +44,7 @@ namespace DungeonCrawler
 
             EntranceExit_Grid = new string[Maze.GetLength(0), Maze.GetLength(1)];
             HP_Grid = new string[Maze.GetLength(0), Maze.GetLength(1)];
+            Item_Grid = new string[Maze.GetLength(0), Maze.GetLength(1)];
 
             for (int i = 0; i < Maze.GetLength(0); i++)
             {
@@ -50,6 +53,16 @@ namespace DungeonCrawler
                     HP_Grid[j, i] = " ";
                 }
             }
+
+
+            for (int i = 0; i < Maze.GetLength(0); i++)
+            {
+                for (int j = 0; j < Maze.GetLength(1); j++)
+                {
+                    Item_Grid[j, i] = " ";
+                }
+            }
+
 
             for (int i = 0; i < Maze.GetLength(0); i++ )
             {
@@ -276,6 +289,8 @@ namespace DungeonCrawler
                 }
             }
         }
+
+        //Generates the level via depth-first search
 
         public static void GenLevel(out string[,] Maze, int size, string Seed)
         {
@@ -628,14 +643,18 @@ namespace DungeonCrawler
             }
         }
 
+        //Constructor
+
         public Floor(int Size, string Seed)
         {
-            KrusukalLevel(out Wall_Grid, ref EntranceExit_Grid, ref HP_Grid, Size, Seed);
+            KrusukalLevel(out Wall_Grid, ref EntranceExit_Grid, ref HP_Grid, ref Item_Grid, Size, Seed);
         }
         
         public Floor()
         { 
         }
+
+        //Draws the level onto the screen
 
         public void DrawLevel(SpriteBatch s, Texture2D wall, Texture2D floor, Texture2D Exit, Player p)
         {
@@ -644,7 +663,7 @@ namespace DungeonCrawler
                 for (int j = 0; j < Wall_Grid.GetLength(1); j++)
                 {
 
-                    if (j < p.playerPos.X + 5 && j > p.playerPos.X - 5 && i < p.playerPos.Y + 5 && i > p.playerPos.Y - 5)
+                    if (j < p.pos.X + 5 && j > p.pos.X - 5 && i < p.pos.Y + 5 && i > p.pos.Y - 5)
                     {
                         switch (Wall_Grid[j, i].Substring(0,1))
                         {
@@ -685,10 +704,7 @@ namespace DungeonCrawler
                                 s.Draw(floor, new Rectangle(j * 32, i * 32, 32, 32), Color.DarkGray);
                                 break;
                         }
-                    }
-
-
-                    
+                    }   
                 }
             }
         }

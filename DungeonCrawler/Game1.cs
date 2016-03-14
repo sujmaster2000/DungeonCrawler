@@ -23,6 +23,7 @@ namespace DungeonCrawler
 
         public List<HealthPotion> HPotions = new List<HealthPotion>();
         public List<Enemy> GEnemies = new List<Enemy>();
+        public Dictionary<int, Item> DroppedItems = new Dictionary<int, Item>();
 
         public MouseHandler m;
         public MessageHandler Messages;
@@ -50,6 +51,7 @@ namespace DungeonCrawler
         public bool HasMoved = false;
 
         public int floorNum;
+        public int itemsProcessed;
 
         public Game1()
         {
@@ -70,9 +72,291 @@ namespace DungeonCrawler
 
         protected override void Initialize()
         {
-
-            
             base.Initialize();
+        }
+
+        public void ChangeWeapons_Update(Item i)
+        {
+            KeyboardState keyboard = Keyboard.GetState();
+            if (keyboard.IsKeyDown(Keys.Y))
+            {
+                string type = DroppedItems[Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1))].Type;
+
+                switch (type)
+                {
+                    case "head":
+                        player.Attack -= player.Equiped[0].attackModifier;
+                        player.Block -= player.Equiped[0].blockModifier;
+                        float HealthPercentage = player.Health / (300 + player.Equiped[0].healthModifier + player.Equiped[1].healthModifier + player.Equiped[2].healthModifier + player.Equiped[3].healthModifier);
+
+                        player.Equiped[0] = DroppedItems[Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1))];
+                        DroppedItems.Remove(Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1)));
+                        if (test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Length == 2)
+                        {
+                            test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)] = " ";
+                        }
+                        else
+                        {
+                            test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)] = test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Remove(1, 1);
+                        }
+
+                        player.Health = (300 + player.Equiped[0].healthModifier + player.Equiped[1].healthModifier + player.Equiped[2].healthModifier + player.Equiped[3].healthModifier) * HealthPercentage;
+                        player.Attack+= player.Equiped[0].attackModifier;
+                        player.Block+= player.Equiped[0].blockModifier;
+                        break;
+                    case "body":
+                        player.Attack-= player.Equiped[1].attackModifier;
+                        player.Block-= player.Equiped[1].blockModifier;
+                        HealthPercentage = player.Health/ (300 + player.Equiped[0].healthModifier + player.Equiped[1].healthModifier + player.Equiped[2].healthModifier + player.Equiped[3].healthModifier);
+
+                        player.Equiped[1] = DroppedItems[Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1))];
+                        DroppedItems.Remove(Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1)));
+                        if (test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Length == 2)
+                        {
+                            test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)] = " ";
+                        }
+                        else
+                        {
+                            test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)] = test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Remove(1, 1);
+                        }
+
+                        player.Health= (300 + player.Equiped[0].healthModifier + player.Equiped[1].healthModifier + player.Equiped[2].healthModifier + player.Equiped[3].healthModifier) * HealthPercentage;
+                        player.Attack+= player.Equiped[1].attackModifier;
+                        player.Block+= player.Equiped[1].blockModifier;
+                        break;
+                    case "legs":
+                        player.Attack-= player.Equiped[2].attackModifier;
+                        player.Block-= player.Equiped[2].blockModifier;
+                        HealthPercentage = player.Health/ (300 + player.Equiped[0].healthModifier + player.Equiped[1].healthModifier + player.Equiped[2].healthModifier + player.Equiped[3].healthModifier);
+
+                        player.Equiped[2] = DroppedItems[Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1))];
+                        DroppedItems.Remove(Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1)));
+                        if (test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Length == 2)
+                        {
+                            test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)] = " ";
+                        }
+                        else
+                        {
+                            test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)] = test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Remove(1, 1);
+                        }
+                        player.Health= (300 + player.Equiped[0].healthModifier + player.Equiped[1].healthModifier + player.Equiped[2].healthModifier + player.Equiped[3].healthModifier) * HealthPercentage;
+
+                        player.Attack+= player.Equiped[2].attackModifier;
+                        player.Block+= player.Equiped[2].blockModifier;
+                        break;
+                    case "weapon":
+                        player.Attack-= player.Equiped[3].attackModifier;
+                        player.Block-= player.Equiped[3].blockModifier;
+                        HealthPercentage = player.Health/ (300 + player.Equiped[0].healthModifier + player.Equiped[1].healthModifier + player.Equiped[2].healthModifier + player.Equiped[3].healthModifier);
+
+                        player.Equiped[3] = DroppedItems[Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1))];
+                        DroppedItems.Remove(Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1)));
+                        if (test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Length == 2)
+                        {
+                            test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)] = " ";
+                        }
+                        else
+                        {
+                            test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)] = test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Remove(1, 1);
+                        }
+                        player.Health= (300 + player.Equiped[0].healthModifier + player.Equiped[1].healthModifier + player.Equiped[2].healthModifier + player.Equiped[3].healthModifier) * HealthPercentage;
+
+                        player.Attack+= player.Equiped[3].attackModifier;
+                        player.Block+= player.Equiped[3].blockModifier;
+                        break;
+                }
+
+                gameState = "inGame";
+            }
+            else if (keyboard.IsKeyDown(Keys.N))
+            {
+                DroppedItems.Remove(Convert.ToInt32(test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)].Substring(1, 1)));
+                test.Item_Grid[Convert.ToInt32(player.pos.X), Convert.ToInt32(player.pos.Y)] = " ";
+
+                gameState = "inGame";
+            }
+        }
+
+        public void ChangeWeapons_Draw(Item i, SpriteBatch s)
+        {
+            s.DrawString(arial, "Item to change to: Health Modifier = " + i.healthModifier + " Attack Modifier = " + i.attackModifier + " Block Modifier = " + i.blockModifier, new Vector2(100, 100), Color.White);
+            s.Draw(i.Textures[0], new Rectangle(0, 100, 100, 100), i.color);
+
+            switch (i.Type)
+            {
+                case "head":
+                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[0].healthModifier + " Attack Modifier = " + player.Equiped[0].attackModifier + " Block Modifier = " + player.Equiped[0].blockModifier, new Vector2(100, 300), Color.White);
+                    s.Draw(player.Equiped[0].Textures[0], new Rectangle(0, 300, 100, 100), player.Equiped[0].color);
+                    break;
+                case "body":
+                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[1].healthModifier + " Attack Modifier = " + player.Equiped[1].attackModifier + " Block Modifier = " + player.Equiped[1].blockModifier, new Vector2(100, 300), Color.White);
+                    s.Draw(player.Equiped[1].Textures[0], new Rectangle(0, 300, 100, 100), player.Equiped[1].color);
+                    break;
+                case "legs":
+                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[2].healthModifier + " Attack Modifier = " + player.Equiped[2].attackModifier + " Block Modifier = " + player.Equiped[2].blockModifier, new Vector2(100, 300), Color.White);
+                    s.Draw(player.Equiped[2].Textures[0], new Rectangle(0, 300, 100, 100), player.Equiped[2].color);
+                    break;
+                case "weapon":
+                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[3].healthModifier + " Attack Modifier = " + player.Equiped[3].attackModifier + " Block Modifier = " + player.Equiped[3].blockModifier, new Vector2(100, 300), Color.White);
+                    s.Draw(player.Equiped[3].Textures[0], new Rectangle(0, 300, 100, 100), player.Equiped[3].color);
+                    break;
+            }
+        }
+
+        public Item randItem (Random r, Vector2 pos)
+        {
+            Item i = new Item();
+
+            i.healthModifier = 0;
+            i.attackModifier = 0;
+            i.blockModifier = 0;
+
+            i.position = pos;
+
+            string rarity;
+
+            int num = r.Next(0,100);
+
+            if (num < 60)
+            {
+                rarity = "common";
+            }
+
+            else if (num < 90)
+            {
+                rarity = "rare";
+            }
+            else
+            {
+                rarity = "legendary";
+            }
+
+            switch (rarity)
+            {
+                case "common":
+                    int upgradePoints = 10;
+
+                    i.color = Color.Green;
+
+                    while (upgradePoints > 0)
+                    {
+                        int rndStat = r.Next(0,3);
+                        switch (rndStat)
+                        {
+                            case 0:
+                                int modifierValue = r.Next(0, upgradePoints + 1);
+                                upgradePoints -= modifierValue;
+                                i.healthModifier += modifierValue * floorNum;
+                                break;
+                            case 1:
+                                modifierValue = r.Next(0, upgradePoints + 1);
+                                upgradePoints -= modifierValue;
+                                i.attackModifier += modifierValue * floorNum;
+                                break;
+                            case 2:
+                                modifierValue = r.Next(0, upgradePoints + 1);
+                                upgradePoints -= modifierValue;
+                                i.blockModifier += modifierValue * floorNum;
+                                break;
+                        }
+                    }
+                    break;
+
+                case "rare":
+                    upgradePoints = 15;
+
+                    i.color = Color.Blue;
+
+                    while (upgradePoints > 0)
+                    {
+                        int rndStat = r.Next(0, 3);
+                        switch (rndStat)
+                        {
+                            case 0:
+                                int modifierValue = r.Next(0, upgradePoints + 1);
+                                upgradePoints -= modifierValue;
+                                i.healthModifier += modifierValue * floorNum;
+                                break;
+                            case 1:
+                                modifierValue = r.Next(0, upgradePoints + 1);
+                                upgradePoints -= modifierValue;
+                                i.attackModifier += modifierValue * floorNum;
+                                break;
+                            case 2:
+                                modifierValue = r.Next(0, upgradePoints + 1);
+                                upgradePoints -= modifierValue;
+                                i.blockModifier += modifierValue * floorNum;
+                                break;
+                        }
+                    }
+                    break;
+
+                case "legendary":
+                    upgradePoints = 20;
+
+                    i.color = Color.Red;
+
+                    while (upgradePoints > 0)
+                    {
+                        int rndStat = r.Next(0, 3);
+                        switch (rndStat)
+                        {
+                            case 0:
+                                int modifierValue = r.Next(0, upgradePoints + 1);
+                                upgradePoints -= modifierValue;
+                                i.healthModifier += modifierValue * floorNum;
+                                break;
+                            case 1:
+                                modifierValue = r.Next(0, upgradePoints + 1);
+                                upgradePoints -= modifierValue;
+                                i.attackModifier += modifierValue * floorNum;
+                                break;
+                            case 2:
+                                modifierValue = r.Next(0, upgradePoints + 1);
+                                upgradePoints -= modifierValue;
+                                i.blockModifier += modifierValue * floorNum;
+                                break;
+                        }
+                    }
+                    break;
+            }
+            switch (r.Next(0, 4))
+            {
+                case 0:
+                    i.Type = "legs";
+                    i.Textures = new Texture2D[4];
+                    i.Textures[0] = Content.Load<Texture2D>("front_legs");
+                    i.Textures[1] = Content.Load<Texture2D>("back_legs");
+                    i.Textures[2] = Content.Load<Texture2D>("left_legs");
+                    i.Textures[3] = Content.Load<Texture2D>("right_legs");
+                    break;
+                case 1:
+                    i.Type = "body";
+                    i.Textures = new Texture2D[4];
+                    i.Textures[0] = Content.Load<Texture2D>("front_body");
+                    i.Textures[1] = Content.Load<Texture2D>("back_body");
+                    i.Textures[2] = Content.Load<Texture2D>("left_body");
+                    i.Textures[3] = Content.Load<Texture2D>("right_body");
+                    break;
+                case 2:
+                    i.Type = "head";
+                    i.Textures = new Texture2D[4];
+                    i.Textures[0] = Content.Load<Texture2D>("front_head");
+                    i.Textures[1] = Content.Load<Texture2D>("back_head");
+                    i.Textures[2] = Content.Load<Texture2D>("left_head");
+                    i.Textures[3] = Content.Load<Texture2D>("right_head");
+                    break;
+                case 3:
+                    i.Type = "weapon";
+                    i.Textures = new Texture2D[4];
+                    i.Textures[0] = Content.Load<Texture2D>("front_weapon");
+                    i.Textures[1] = Content.Load<Texture2D>("back_weapon");
+                    i.Textures[2] = Content.Load<Texture2D>("left_weapon");
+                    i.Textures[3] = Content.Load<Texture2D>("right_weapon");
+                    i.SAbilities = new SwordAbilitySet(attack, attack, attack);
+                    break;
+            }
+            return i;
         }
 
         /// <summary>
@@ -131,7 +415,7 @@ namespace DungeonCrawler
                         HPotions.Insert(i, h);
                     }
 
-                    camera = new Camera(GraphicsDevice.Viewport);
+                    camera = new Camera();
 
                     fps = new FrameRateCounter();
 
@@ -153,21 +437,21 @@ namespace DungeonCrawler
                     attack = Content.Load<SoundEffect>("AttackSound");
                     step = Content.Load<SoundEffect>("Step");
 
-                    player = new Player(new Vector2(1, 1), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4, 1),
-             new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2, 1),
-             new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2, 1),
-             new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, 1, "sword", new SwordAbilitySet(attack, attack, attack)));
+                    player = new Player(new Vector2(1, 1), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4, 1, "rare"),
+             new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2, 1, "rare"),
+             new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2, 1, "rare"),
+             new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, 1, "sword", "rare", new SwordAbilitySet(attack, attack, attack)));
 
                     for (int i = 0; i < floorNum * 3; i++)
                     {
-                        Enemy e = new Enemy(test.Wall_Grid, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), floorNum * 3, floorNum, 0),
-            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), floorNum * 3, floorNum, 0),
-            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), floorNum * 3, floorNum, 0),
-            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, floorNum * 5, 0, "sword", new SwordAbilitySet(attack, attack, attack)));
+                        Enemy e = new Enemy(test.Wall_Grid, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), floorNum * 3, floorNum, 0, "common"),
+            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), floorNum * 3, floorNum, 0, "common"),
+            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), floorNum * 3, floorNum, 0, "common"),
+            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, floorNum * 5, 0, "sword", "common" ,new SwordAbilitySet(attack, attack, attack)));
                         GEnemies.Insert(i, e);
                     }
 
-                    Messages = new MessageHandler(new Vector2(player.playerPos.X * 32 + 150, player.playerPos.Y * 32 - 360));
+                    Messages = new MessageHandler(new Vector2(player.pos.X * 32 + 150, player.pos.Y * 32 - 360));
                     gameState = "inGame";
                     break;
 
@@ -177,6 +461,7 @@ namespace DungeonCrawler
 
                     GEnemies = new List<Enemy>();
                     HPotions = new List<HealthPotion>();
+                    DroppedItems = new Dictionary<int, Item>();
 
                     for (int i = 0; i < 5; i++)
                     {
@@ -188,10 +473,10 @@ namespace DungeonCrawler
 
                     for (int i = 0; i < floorNum * 3; i++)
                     {
-                        Enemy e = new Enemy(test.Wall_Grid, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), floorNum * 3, floorNum, 0),
-            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), floorNum * 3, floorNum, 0),
-            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), floorNum * 3, floorNum, 0),
-            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, floorNum * 5, 0, "sword", new SwordAbilitySet(attack, attack, attack)));
+                        Enemy e = new Enemy(test.Wall_Grid, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), floorNum * 3, floorNum, 0, "common"),
+            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), floorNum * 3, floorNum, 0, "common"),
+            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), floorNum * 3, floorNum, 0, "common"),
+            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, floorNum * 5, 0, "sword", "common", new SwordAbilitySet(attack, attack, attack)));
                         GEnemies.Insert(i, e);
                     }
 
@@ -203,7 +488,7 @@ namespace DungeonCrawler
                         }
                     }
 
-                    player.playerPos = new Vector2(1, 1);
+                    player.pos = new Vector2(1, 1);
 
                     gameState = "inGame";
                     break;
@@ -219,7 +504,7 @@ namespace DungeonCrawler
                         gameState = "GameOver";
                     }
 
-                    Messages.Update(new Vector2(player.playerPos.X * 32 + 150, player.playerPos.Y * 32 - 360));
+                    Messages.Update(new Vector2(player.pos.X * 32 + 150, player.pos.Y * 32 - 360));
 
                     KeyboardState k = Keyboard.GetState();
 
@@ -257,17 +542,17 @@ namespace DungeonCrawler
                     }
                     if (k.IsKeyDown(Keys.E))
                     {
-                        GEnemies.Add(new Enemy(test.Wall_Grid, new Random(), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4, 0),
-            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2, 0),
-            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2, 0),
-            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, 0, "sword", new SwordAbilitySet(attack, attack, attack))));
+                        GEnemies.Add(new Enemy(test.Wall_Grid, new Random(), new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), 4, 4, 0, "common"),
+            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), 6, 2, 0, "common"),
+            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), 4, 2, 0, "common"),
+            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, 10, 0, "sword", "common", new SwordAbilitySet(attack, attack, attack))));
                         player.Epressed = true;
                     }
 
 
                     m.Update();
 
-                    player.update(test, gameTime, this, out HasMoved, GEnemies, ref HPotions, attack, step, ref gameState);
+                    player.update(test, gameTime, this, out HasMoved, GEnemies, ref HPotions, attack, step, ref gameState, ref DroppedItems);
 
                     if (HasMoved == true)
                     {
@@ -276,7 +561,7 @@ namespace DungeonCrawler
                             float tempX = e.pos.X;
                             float tempY = e.pos.Y;
 
-                            e.Update(player, test.Wall_Grid);
+                            e.Update(player, test, ref DroppedItems, this, r);
 
                             test.Wall_Grid[Convert.ToInt32(tempX), Convert.ToInt32(tempY)] = "f";
                             if (e.isAlive)
@@ -288,22 +573,22 @@ namespace DungeonCrawler
 
                     foreach (Enemy e in GEnemies)
                     {
-                        if (e.pos.X == player.playerPos.X + 1 && e.pos.Y == player.playerPos.Y && player.hasAttacked && !e.hasAttacked)
+                        if (e.pos.X == player.pos.X + 1 && e.pos.Y == player.pos.Y && player.hasAttacked && !e.hasAttacked && e.isAlive)
                         {
                             e.attack(player, ref Messages);
                             e.hasAttacked = true;
                         }
-                        else if (e.pos.X == player.playerPos.X - 1 && e.pos.Y == player.playerPos.Y && player.hasAttacked && !e.hasAttacked)
+                        else if (e.pos.X == player.pos.X - 1 && e.pos.Y == player.pos.Y && player.hasAttacked && !e.hasAttacked && e.isAlive)
                         {
                             e.attack(player, ref Messages);
                             e.hasAttacked = true;
                         }
-                        else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y + 1 && player.hasAttacked && !e.hasAttacked)
+                        else if (e.pos.X == player.pos.X && e.pos.Y == player.pos.Y + 1 && player.hasAttacked && !e.hasAttacked && e.isAlive)
                         {
                             e.attack(player, ref Messages);
                             e.hasAttacked = true;
                         }
-                        else if (e.pos.X == player.playerPos.X && e.pos.Y == player.playerPos.Y - 1 && player.hasAttacked && !e.hasAttacked)
+                        else if (e.pos.X == player.pos.X && e.pos.Y == player.pos.Y - 1 && player.hasAttacked && !e.hasAttacked && e.isAlive)
                         {
                             e.attack(player, ref Messages);
                             e.hasAttacked = true;
@@ -321,8 +606,11 @@ namespace DungeonCrawler
                     }
 
                     // TODO: Add your update logic here
-                    camera.Update(gameTime, player.playerPos);
+                    camera.Update(gameTime, player.pos);
                     fps.Update(gameTime);
+                    break;
+                case "changeItem":
+                    ChangeWeapons_Update(DroppedItems[Convert.ToInt32(test.Item_Grid[(int)player.pos.X, (int)player.pos.Y].Substring(1,1))]);
                     break;
             }
             base.Update(gameTime);
@@ -357,11 +645,21 @@ namespace DungeonCrawler
                     mainMenu.Draw(spriteBatch, this.graphics);
                     spriteBatch.End();
                     break;
+                case "changeItem":
+                    spriteBatch.Begin();
+                    ChangeWeapons_Draw(DroppedItems[Convert.ToInt32(test.Item_Grid[(int)player.pos.X, (int)player.pos.Y].Substring(1, 1))], spriteBatch);
+                    spriteBatch.End();
+                    break;
                 case "inGame":
                     spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, camera.transform);
                     fps.frameCounter++;
 
                     test.DrawLevel(spriteBatch, wall, floor, Content.Load<Texture2D>("Staircase.png"), player);
+
+                    foreach (Item i in DroppedItems.Values)
+                    {
+                        i.Draw(spriteBatch);
+                    }
 
                     foreach (HealthPotion i in HPotions)
                     {
@@ -375,11 +673,17 @@ namespace DungeonCrawler
 
                     player.drawPlayer(spriteBatch);
 
-                    spriteBatch.DrawString(arial, "fps: " + fps.frameRate.ToString(), new Vector2(player.playerPos.X * 32 - 300, player.playerPos.Y * 32 - 160), Color.White);
-                    spriteBatch.DrawString(arial, "health: " + player.Health, new Vector2(player.playerPos.X * 32 - 300, player.playerPos.Y * 32 + 160), Color.Red);
-                    spriteBatch.DrawString(arial, m.rect.X + " " + m.rect.Y, new Vector2(player.playerPos.X * 32 + 15, player.playerPos.Y * 32 + 15), Color.Red);
-                    spriteBatch.DrawString(arial, success, new Vector2(player.playerPos.X * 32 + 15, player.playerPos.Y * 32 + 15), Color.Red);
-                    spriteBatch.DrawString(arial, coolDowns, new Vector2(player.playerPos.X * 32 - 30, player.playerPos.Y * 32 + 150), Color.White);
+
+
+                    spriteBatch.DrawString(arial, "fps: " + fps.frameRate.ToString(), new Vector2(player.pos.X * 32 - 300, player.pos.Y * 32 - 160), Color.White);
+                    spriteBatch.DrawString(arial, "health: " + player.Health, new Vector2(player.pos.X * 32 - 300, player.pos.Y * 32 + 160), Color.Red);
+                    spriteBatch.DrawString(arial, m.rect.X + " " + m.rect.Y, new Vector2(player.pos.X * 32 + 15, player.pos.Y * 32 + 15), Color.Red);
+                    spriteBatch.DrawString(arial, success, new Vector2(player.pos.X * 32 + 15, player.pos.Y * 32 + 15), Color.Red);
+                    spriteBatch.DrawString(arial, coolDowns, new Vector2(player.pos.X * 32 - 30, player.pos.Y * 32 + 150), Color.White);
+
+                    spriteBatch.DrawString(arial, "Health Modifier " + player.Health, new Vector2(player.pos.X * 32 + 100, player.pos.Y * 32 - 160), Color.White);
+                    spriteBatch.DrawString(arial, "Block Modifier " + player.Block, new Vector2(player.pos.X * 32 + 100, player.pos.Y * 32 - 100), Color.White);
+                    spriteBatch.DrawString(arial, "Attack Modifier " + player.Attack, new Vector2(player.pos.X * 32 + 100, player.pos.Y * 32 - 140), Color.White);
 
                     Messages.Draw(spriteBatch, arial);
 
@@ -392,3 +696,5 @@ namespace DungeonCrawler
         }
     }
 }
+/*hg
+ * f*/

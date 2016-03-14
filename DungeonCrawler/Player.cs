@@ -25,9 +25,9 @@ namespace DungeonCrawler
 
         public Item[] Equiped = new Item[4];
 
-        public Vector2 playerPos;
+        public Vector2 pos;
 
-        public int Health = 300;
+        public float Health = 300;
 
         public int Attack = 0;
 
@@ -38,9 +38,10 @@ namespace DungeonCrawler
 
         }
 
+        //Constructor
         public Player(Vector2 Pos, Item Head, Item Body, Item Legs, Item Weapon)
         {
-            playerPos = Pos;
+            pos = Pos;
             Equiped[0] = Head;
             Equiped[1] = Body;
             Equiped[2] = Legs;
@@ -51,18 +52,20 @@ namespace DungeonCrawler
             Block += Head.blockModifier + Body.blockModifier + Legs.blockModifier + Weapon.blockModifier;
         }
 
-        public void update(Floor f, GameTime g, Game1 game, out bool hasPerformedAction, List<Enemy> Enemies, ref List<HealthPotion> HPotions,SoundEffect attack, SoundEffect step, ref string GameState)
+        //Updates player position and health
+        public void update(Floor f, GameTime g, Game1 game, out bool hasPerformedAction, List<Enemy> Enemies, ref List<HealthPotion> HPotions,SoundEffect attack, SoundEffect step, ref string GameState, ref Dictionary<int, Item> droppedItems)
         {
             hasPerformedAction = false;
             KeyboardState k = Keyboard.GetState();
+
             if (k.IsKeyDown(Keys.LeftShift))
             {
                 if (k.IsKeyDown(Keys.D))
                 {
                     direction = 'r';
-                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
+                    if (f.Wall_Grid[System.Convert.ToInt32(pos.X + 1), System.Convert.ToInt32(pos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(pos.X + 1), System.Convert.ToInt32(pos.Y)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
                     {
-                        playerPos.X += 1;
+                        pos.X += 1;
                         hasPerformedAction = true;
                         step.Play();
                         Equiped[3].SAbilities.UpdateCooldown(this);
@@ -71,9 +74,9 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.A))
                 {
                     direction = 'l';
-                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
+                    if (f.Wall_Grid[System.Convert.ToInt32(pos.X - 1), System.Convert.ToInt32(pos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(pos.X - 1), System.Convert.ToInt32(pos.Y)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
                     {
-                        playerPos.X -= 1;
+                        pos.X -= 1;
                         hasPerformedAction = true;
                         step.Play();
                         Equiped[3].SAbilities.UpdateCooldown(this);
@@ -82,9 +85,9 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.S))
                 {
                     direction = 'd';
-                    if(f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
+                    if(f.Wall_Grid[System.Convert.ToInt32(pos.X), System.Convert.ToInt32(pos.Y + 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(pos.X), System.Convert.ToInt32(pos.Y + 1)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
                     {
-                        playerPos.Y += 1;
+                        pos.Y += 1;
                         hasPerformedAction = true;
                         step.Play();
                         Equiped[3].SAbilities.UpdateCooldown(this);
@@ -93,9 +96,9 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.W))
                 {
                     direction = 'u';
-                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
+                    if (f.Wall_Grid[System.Convert.ToInt32(pos.X), System.Convert.ToInt32(pos.Y - 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(pos.X), System.Convert.ToInt32(pos.Y - 1)] != "e" && Convert.ToInt32(g.TotalGameTime.TotalMilliseconds) % 200 == 0)
                     {
-                        playerPos.Y -= 1;
+                        pos.Y -= 1;
                         hasPerformedAction = true;
                         step.Play();
                         Equiped[3].SAbilities.UpdateCooldown(this);
@@ -160,9 +163,9 @@ namespace DungeonCrawler
                 if (k.IsKeyDown(Keys.D))
                 {
                     direction = 'r';
-                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X + 1), System.Convert.ToInt32(playerPos.Y)] != "e" && !Dpressed)
+                    if (f.Wall_Grid[System.Convert.ToInt32(pos.X + 1), System.Convert.ToInt32(pos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(pos.X + 1), System.Convert.ToInt32(pos.Y)] != "e" && !Dpressed)
                     {
-                        playerPos.X += 1;
+                        pos.X += 1;
                         hasPerformedAction = true;
                         Dpressed = true;
                         step.Play();
@@ -172,9 +175,9 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.A))
                 {
                     direction = 'l';
-                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X - 1), System.Convert.ToInt32(playerPos.Y)] != "e" && !Apressed)
+                    if (f.Wall_Grid[System.Convert.ToInt32(pos.X - 1), System.Convert.ToInt32(pos.Y)] != "w" && f.Wall_Grid[System.Convert.ToInt32(pos.X - 1), System.Convert.ToInt32(pos.Y)] != "e" && !Apressed)
                     {
-                        playerPos.X -= 1;
+                        pos.X -= 1;
                         hasPerformedAction = true;
                         Apressed = true;
                         step.Play();
@@ -184,9 +187,9 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.S))
                 {
                     direction = 'd';
-                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y + 1)] != "e" && !Spressed)
+                    if (f.Wall_Grid[System.Convert.ToInt32(pos.X), System.Convert.ToInt32(pos.Y + 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(pos.X), System.Convert.ToInt32(pos.Y + 1)] != "e" && !Spressed)
                     {
-                        playerPos.Y += 1;
+                        pos.Y += 1;
                         hasPerformedAction = true;
                         Spressed = true;
                         step.Play();
@@ -196,9 +199,9 @@ namespace DungeonCrawler
                 else if (k.IsKeyDown(Keys.W))
                 {
                     direction = 'u';
-                    if (f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(playerPos.X), System.Convert.ToInt32(playerPos.Y - 1)] != "e" && !Wpressed)
+                    if (f.Wall_Grid[System.Convert.ToInt32(pos.X), System.Convert.ToInt32(pos.Y - 1)] != "w" && f.Wall_Grid[System.Convert.ToInt32(pos.X), System.Convert.ToInt32(pos.Y - 1)] != "e" && !Wpressed)
                     {
-                        playerPos.Y -= 1;
+                        pos.Y -= 1;
                         hasPerformedAction = true;
                         Wpressed = true;
                         step.Play();
@@ -225,16 +228,21 @@ namespace DungeonCrawler
 
             }
    
-            if (f.HP_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(0,1) == "h")
+            if (f.HP_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)].Substring(0,1) == "h")
             {
                 Health += 50;
-                HPotions[Convert.ToInt32(f.Wall_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)].Substring(1, 1))].hasBeenConsumed = true;
-                f.HP_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] = " ";
+                HPotions[Convert.ToInt32(f.Wall_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)].Substring(1, 1))].hasBeenConsumed = true;
+                f.HP_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] = " ";
             }
 
-            if (f.EntranceExit_Grid[Convert.ToInt32(playerPos.X), Convert.ToInt32(playerPos.Y)] == "exit")
+            if (f.EntranceExit_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == "exit")
             {
                 GameState = "genLevel";
+            }
+
+            if (f.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)].Substring(0,1) == "i")
+            {
+                game.gameState = "changeItem";
             }
         }
 
@@ -245,35 +253,35 @@ namespace DungeonCrawler
                 case 'd':
                     {
 
-                        s.Draw(Equiped[0].Textures[0], playerPos * 32, Color.White);
-                        s.Draw(Equiped[1].Textures[0], playerPos * 32, Color.White);
-                        s.Draw(Equiped[2].Textures[0], playerPos * 32, Color.White);
-                        s.Draw(Equiped[3].Textures[0], playerPos * 32, Color.White);
+                        s.Draw(Equiped[0].Textures[0], pos * 32, Equiped[0].color);
+                        s.Draw(Equiped[1].Textures[0], pos * 32, Equiped[1].color);
+                        s.Draw(Equiped[2].Textures[0], pos * 32, Equiped[2].color);
+                        s.Draw(Equiped[3].Textures[0], pos * 32, Equiped[3].color);
                         break;
                     }
                 case 'u':
                     {
-                        s.Draw(Equiped[3].Textures[1], playerPos * 32, Color.White);
-                        s.Draw(Equiped[0].Textures[1], playerPos * 32, Color.White);
-                        s.Draw(Equiped[1].Textures[1], playerPos * 32, Color.White);
-                        s.Draw(Equiped[2].Textures[1], playerPos * 32, Color.White);
+                        s.Draw(Equiped[3].Textures[1], pos * 32, Equiped[3].color);
+                        s.Draw(Equiped[0].Textures[1], pos * 32, Equiped[0].color);
+                        s.Draw(Equiped[1].Textures[1], pos * 32, Equiped[1].color);
+                        s.Draw(Equiped[2].Textures[1], pos * 32, Equiped[2].color);
 
                         break;
                     }
                 case 'l':
                     {
-                        s.Draw(Equiped[0].Textures[2], playerPos * 32, Color.White);
-                        s.Draw(Equiped[1].Textures[2], playerPos * 32, Color.White);
-                        s.Draw(Equiped[2].Textures[2], playerPos * 32, Color.White);
-                        s.Draw(Equiped[3].Textures[2], playerPos * 32, Color.White);
+                        s.Draw(Equiped[0].Textures[2], pos * 32, Equiped[0].color);
+                        s.Draw(Equiped[1].Textures[2], pos * 32, Equiped[1].color);
+                        s.Draw(Equiped[2].Textures[2], pos * 32, Equiped[2].color);
+                        s.Draw(Equiped[3].Textures[2], pos * 32, Equiped[3].color);
                         break;
                     }
                 case 'r':
                     {
-                        s.Draw(Equiped[0].Textures[3], playerPos * 32, Color.White);
-                        s.Draw(Equiped[1].Textures[3], playerPos * 32, Color.White);
-                        s.Draw(Equiped[2].Textures[3], playerPos * 32, Color.White);
-                        s.Draw(Equiped[3].Textures[3], playerPos * 32, Color.White);
+                        s.Draw(Equiped[0].Textures[3], pos * 32, Equiped[0].color);
+                        s.Draw(Equiped[1].Textures[3], pos * 32, Equiped[1].color);
+                        s.Draw(Equiped[2].Textures[3], pos * 32, Equiped[2].color);
+                        s.Draw(Equiped[3].Textures[3], pos * 32, Equiped[3].color);
                         break;
                     }
             }
