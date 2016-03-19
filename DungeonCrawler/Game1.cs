@@ -32,6 +32,7 @@ namespace DungeonCrawler
         public Texture2D floor;
         public Texture2D player_texture;
         public Texture2D healthPotion;
+        public Texture2D healthBar;
 
         MainMenu mainMenu;
 
@@ -372,7 +373,7 @@ namespace DungeonCrawler
 
             mainMenu.LoadContent(Content.Load<Texture2D>("StartGame.png"), Content.Load<Texture2D>("Exit.png"), Content.Load<Texture2D>("Options.png"), Content.Load<Texture2D>("HiScores.png"), Content.Load<Texture2D>("Arrow.png"));
 
-
+            healthBar = Content.Load<Texture2D>("RedSquare.png");
             // TODO: use this.Content to load your game content here
         }
 
@@ -668,7 +669,7 @@ namespace DungeonCrawler
 
                     foreach (Enemy e in GEnemies)
                     {
-                        e.draw(spriteBatch, player_texture, arial, player);
+                        e.draw(spriteBatch, player_texture, healthBar, arial, player);
                     }
 
                     player.drawPlayer(spriteBatch);

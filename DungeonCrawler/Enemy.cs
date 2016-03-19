@@ -8,6 +8,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace DungeonCrawler
 {
+    public struct doubleInt
+    {
+        public int x;
+        public int y;
+    }
     public class Enemy
     {
         public Vector2 pos;
@@ -19,12 +24,17 @@ namespace DungeonCrawler
         public bool hasDroppedItem = false;
 
         public List<Item> Equiped = new List<Item>();
+        public List<doubleInt> path = new List<doubleInt>();
 
         public char direction;
 
-        public int health;
+        float maxHealth;
+        public float health;
         public int attackDamage;
+
         public double block;
+
+        public string State
 
         public Enemy (Vector2 Pos, Item Head, Item Body, Item Legs, Item Weapon)
         {
@@ -32,6 +42,7 @@ namespace DungeonCrawler
             rect = new Rectangle(Convert.ToInt32(pos.X * 32), Convert.ToInt32(pos.Y * 32), 32, 32);
 
             health = 20 + (Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier);
+            maxHealth = health;
             attackDamage = Head.attackModifier + Body.attackModifier + Legs.attackModifier + Weapon.attackModifier;
             block = Head.blockModifier + Body.blockModifier + Legs.blockModifier + Weapon.blockModifier;
 
@@ -59,6 +70,7 @@ namespace DungeonCrawler
             rect = new Rectangle(Convert.ToInt32(pos.X * 32), Convert.ToInt32(pos.Y * 32), 32, 32);
 
             health = 20 + (Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier);
+            maxHealth = health;
             attackDamage = Head.attackModifier + Body.attackModifier + Legs.attackModifier + Weapon.attackModifier;
             block = Head.blockModifier + Body.blockModifier + Legs.blockModifier + Weapon.blockModifier;
 
@@ -73,7 +85,125 @@ namespace DungeonCrawler
 
         }
 
+        public List<doubleInt> getPath (Floor Maze, Vector2 Dest)
+        {
+            List<doubleInt> path = new List<doubleInt>();
 
+
+            bool AllTilesChecked = false;
+
+            int[,] maze = new int[Maze.Wall_Grid.GetLength(0), Maze.Wall_Grid.GetLength(1)];
+
+            for (int i = 0; i < Maze.Wall_Grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < Maze.Wall_Grid.GetLength(1); j++)
+                {
+                    if (Maze.Wall_Grid[j, i] == "w")
+                    {
+                        maze[j, i] = -1;
+                    }
+                    else
+                    {
+                        maze[j, i] = 999; //infinity
+                    }
+                }
+            }
+
+            maze[(int) pos.X, (int) pos.Y] = 0;
+
+            while (!AllTilesChecked)
+            {
+                AllTilesChecked = true;
+
+                for (int i = 0; i < Maze.Wall_Grid.GetLength(0); i++)
+                {
+                    for (int j = 0; j < Maze.Wall_Grid.GetLength(1); j++)
+                    {
+                        if (maze[j, i] != -1)
+                        {
+                            if (j < Maze.Wall_Grid.GetLength(0) - 1)
+                            {
+                                if (maze[j + 1, i] - 1 > maze[j, i] && maze[j + 1, i] != -1)
+                                {
+                                    maze[j + 1, i] = maze[j, i] + 1;
+                                }
+                            }
+                            if (j >= 1)
+                            {
+                                if (maze[j - 1, i] - 1 > maze[j, i] && maze[j - 1, i] != -1)
+                                {
+                                    maze[j - 1, i] = maze[j, i] + 1;
+                                }
+                            }
+                            if (i < Maze.Wall_Grid.GetLength(1) - 1)
+                            {
+                                if (maze[j, i + 1] - 1 > maze[j, i] && maze[j, i + 1] != -1)
+                                {
+                                    maze[j, i + 1] = maze[j, i] + 1;
+                                }
+                            }
+                            if (i >= 1)
+                            {
+                                if (maze[j, i - 1] - 1 > maze[j, i] && maze[j, i - 1] != -1)
+                                {
+                                    maze[j, i - 1] = maze[j, i] + 1;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (int i = 0; i < Maze.Wall_Grid.GetLength(0); i++)
+                {
+                    for (int j = 0; j < Maze.Wall_Grid.GetLength(1); j++)
+                    {
+                        if (maze[j, i] == 999)
+                        {
+                            AllTilesChecked = false;
+                        }
+                    }
+                }
+
+            }
+
+            int x = (int) Dest.X;
+            int y = (int) Dest.Y;
+
+            path = new List<doubleInt>();
+
+            while (x != pos.X || y != pos.Y)
+            {
+                doubleInt newNode;
+
+                newNode.x = x;
+                newNode.y = y;
+
+                path.Add(newNode);
+
+                if (maze[x + 1, y] != -1 && maze[x + 1, y] + 1 == maze[x, y])
+                {
+                    x++;
+
+                }
+                else if (maze[x - 1, y] != -1 && maze[x - 1, y] + 1 == maze[x, y])
+                {
+
+                    x--;
+
+                }
+                else if (maze[x, y + 1] != -1 && maze[x, y + 1] + 1 == maze[x, y])
+                {
+                    y++;
+                }
+                else if (maze[x, y - 1] != -1 && maze[x, y - 1] + 1 == maze[x, y])
+                {
+                    y--;
+                }
+            }
+
+
+            return path;
+        }
 
         public void Update(Player p, Floor Maze, ref Dictionary<int, Item> droppedItems, Game1 g, Random r)
         {
@@ -81,131 +211,31 @@ namespace DungeonCrawler
             {
                 isAlive = false;
                 health = 0;
-                if (r.Next(0, 100) < 35)
+                if (r.Next(0, 100) < 35 && Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == " ")
                 {
                     Item item = g.randItem(r, pos);
                     droppedItems.Add(droppedItems.Count, item);
                     int index = droppedItems.First(x => x.Value == item).Key;
-                    if (Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == " ")
-                    {
-                        Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] = "i" + index;
-                    }
-                    else
-                    {
-                        Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] += index;
-                    }
+
+                    Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] = "i" + index;
+
                 }
                 hasDroppedItem = true;
             }
 
             if (isAlive == true)
             {
-                prevPos = pos;
-                int[, ,] maze;
+                path = getPath(Maze, p.pos);
 
-                maze = new int[Maze.Wall_Grid.GetLength(0), Maze.Wall_Grid.GetLength(1), 3];
-
-                for (int i = 0; i < Maze.Wall_Grid.GetLength(0); i++)
+                if (path.Count != 1 && Maze.Wall_Grid[Convert.ToInt32(path[path.Count - 1].x), Convert.ToInt32(path[path.Count - 1].y)] != "e")
                 {
-                    for (int j = 0; j < Maze.Wall_Grid.GetLength(1); j++)
-                    {
-                        if (Maze.Wall_Grid[j, i] == "f" || Maze.Wall_Grid[j, i].Substring(0,1) == "h" || Maze.Wall_Grid[j,i].Substring(0,1) == "e")
-                        {
-                            maze[j, i, 0] = 999;
-                        }
-                        else
-                        {
-                            maze[j, i, 0] = 1690;
-                        }
-                    }
-                }
+                    prevPos.Y = pos.Y;
+                    prevPos.X = pos.X;
 
-                maze[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y), 0] = 0;
-
-                bool allNodesChecked = false;
-
-                while (!allNodesChecked)
-                {
-                    //Goes through each point (no priority queue)
-                    for (int i = 0; i < maze.GetLength(1); i++)
-                    {
-                        for (int j = 0; j < maze.GetLength(0); j++)
-                        {
-
-                            //Checks the point above below left and right of it (No diagonal edges)
-                            if (j - 1 >= 0 && maze[j, i, 0] + 1 < maze[j - 1, i, 0] && maze[j - 1, i, 0] != 1690)
-                            {
-                                //All edges have weight of 1
-                                maze[j - 1, i, 0] = maze[j, i, 0] + 1;
-                                //stores in the next coordinate location of the previous one
-                                maze[j - 1, i, 1] = j;
-                                maze[j - 1, i, 2] = i;
-                            }
-                            if (j + 1 < maze.GetLength(0) && maze[j, i, 0] + 1 < maze[j + 1, i, 0] && maze[j + 1, i, 0] != 1690)
-                            {
-                                maze[j + 1, i, 0] = maze[j, i, 0] + 1;
-                                maze[j + 1, i, 1] = j;
-                                maze[j + 1, i, 2] = i;
-                            }
-                            if (i - 1 >= 0 && maze[j, i, 0] + 1 < maze[j, i - 1, 0] && maze[j, i - 1, 0] != 1690)
-                            {
-                                maze[j, i - 1, 0] = maze[j, i, 0] + 1;
-                                maze[j, i - 1, 1] = j;
-                                maze[j, i - 1, 2] = i;
-                            }
-                            if (i + 1 < maze.GetLength(1) && maze[j, i, 0] + 1 < maze[j, i + 1, 0] && maze[j, i + 1, 0] != 1690)
-                            {
-                                maze[j, i + 1, 0] = maze[j, i, 0] + 1;
-                                maze[j, i + 1, 1] = j;
-                                maze[j, i + 1, 2] = i;
-                            }
-                        }
-                    }
-                    //checks to see if any nodes still have 'infinite' distance
-                    allNodesChecked = true;
-                    
-                    for (int i = 0; i < maze.GetLength(1); i++)
-                    {
-                        for (int j = 0; j < maze.GetLength(0); j++)
-                        {
-                            if (maze[j, i, 0] == 999)
-                            {
-                                allNodesChecked = false;
-                            }
-                        }
-                    }
-                }
-
-                int[,] path = new int[maze[Convert.ToInt32(p.pos.X), Convert.ToInt32(p.pos.Y), 0], 2];
-
-                //endpoint coordinates
-                int sX = Convert.ToInt32(p.pos.X);
-                int sY = Convert.ToInt32(p.pos.Y);
-
-                //starts at the end and works backwards to the origin
-                for (int i = maze[Convert.ToInt32(p.pos.X), Convert.ToInt32(p.pos.Y), 0] - 1; i > -1; i--)
-                {
-                    path[i, 0] = sX;
-                    path[i, 1] = sY;
-
-                    int SX = sX;
-
-                    sX = maze[sX, sY, 1];
-                    sY = maze[SX, sY, 2];
-                }
-                try
-                {
-                    if (path.GetLength(0) != 1 && Maze.Wall_Grid[Convert.ToInt32(path[0, 0]), Convert.ToInt32(path[0, 1])] != "e")
-                    {
-                        rect.X = path[0, 0] * 32;
-                        rect.Y = path[0, 1] * 32;
-                        pos.X = path[0, 0];
-                        pos.Y = path[0, 1];
-                    }
-                }
-                catch(Exception)
-                {
-
+                    rect.X = path[path.Count - 1].x * 32;
+                    rect.Y = path[path.Count - 1].y * 32;
+                    pos.X = path[path.Count - 1].x;
+                    pos.Y = path[path.Count - 1].y;
                 }
             }   
         }
@@ -229,7 +259,7 @@ namespace DungeonCrawler
             }
         }
 
-        public void draw(SpriteBatch s, Texture2D t, SpriteFont f, Player p)
+        public void draw(SpriteBatch s, Texture2D t, Texture2D b, SpriteFont f, Player p)
         {
             if (pos.X < p.pos.X + 5 && pos.X > p.pos.X - 5 && pos.Y < p.pos.Y + 5 && pos.Y > p.pos.Y - 5 && isAlive)
             {/*
@@ -265,7 +295,7 @@ namespace DungeonCrawler
                             s.Draw(Equiped[1].Textures[0], pos * 32, Equiped[1].color);
                             s.Draw(Equiped[2].Textures[0], pos * 32, Equiped[2].color);
                             s.Draw(Equiped[3].Textures[0], pos * 32, Equiped[3].color);
-                            s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+                            s.Draw(b, new Rectangle(Convert.ToInt32(pos.X) * 32, Convert.ToInt32(pos.Y) * 32 + 26, Convert.ToInt32((health / maxHealth) * 32), 4), Color.White);
                             break;
                         }
                     case 'u':
@@ -274,7 +304,8 @@ namespace DungeonCrawler
                             s.Draw(Equiped[0].Textures[1], pos * 32, Equiped[1].color);
                             s.Draw(Equiped[1].Textures[1], pos * 32, Equiped[2].color);
                             s.Draw(Equiped[2].Textures[1], pos * 32, Equiped[3].color);
-                            s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+                            s.Draw(b, new Rectangle(Convert.ToInt32(pos.X) * 32, Convert.ToInt32(pos.Y) * 32 + 26, Convert.ToInt32((health / maxHealth) * 32), 4), Color.White);
+                            //s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 16), Color.White);
 
                             break;
                         }
@@ -284,7 +315,8 @@ namespace DungeonCrawler
                             s.Draw(Equiped[1].Textures[2], pos * 32, Equiped[1].color);
                             s.Draw(Equiped[2].Textures[2], pos * 32, Equiped[2].color);
                             s.Draw(Equiped[3].Textures[2], pos * 32, Equiped[3].color);
-                            s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+                            s.Draw(b, new Rectangle(Convert.ToInt32(pos.X) * 32, Convert.ToInt32(pos.Y) * 32 + 26, Convert.ToInt32((health / maxHealth) * 32), 4), Color.White);
+                            //s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 16), Color.White);
                             break;
                         }
                     case 'r':
@@ -293,7 +325,8 @@ namespace DungeonCrawler
                             s.Draw(Equiped[1].Textures[3], pos * 32, Equiped[1].color);
                             s.Draw(Equiped[2].Textures[3], pos * 32, Equiped[2].color);
                             s.Draw(Equiped[3].Textures[3], pos * 32, Equiped[3].color);
-                            s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 20), Color.White);
+                            s.Draw(b, new Rectangle(Convert.ToInt32(pos.X) * 32, Convert.ToInt32(pos.Y) * 32 + 26, Convert.ToInt32((health / maxHealth) * 32), 4), Color.White);
+                            //s.DrawString(f, health.ToString(), new Vector2(pos.X * 32, pos.Y * 32 + 16), Color.White);
                             break;
                         }
                 }

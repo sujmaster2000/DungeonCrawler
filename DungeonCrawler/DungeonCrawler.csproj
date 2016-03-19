@@ -177,6 +177,9 @@
     <Content Include="Content\Options.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\RedSquare.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Right_Body.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
