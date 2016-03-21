@@ -27,7 +27,7 @@ namespace DungeonCrawler
                 pos.X = r.Next(1, f.Wall_Grid.GetLength(0) - 1);
                 pos.Y = r.Next(1, f.Wall_Grid.GetLength(1) - 1);
 
-                if (f.Wall_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == "f")
+                if (f.Wall_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == "f" && pos != new Vector2(1,1))
                 {
                     validPos = true;
                 }

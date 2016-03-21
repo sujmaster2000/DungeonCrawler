@@ -25,9 +25,6 @@ namespace DungeonCrawler
         public List<Enemy> GEnemies = new List<Enemy>();
         public Dictionary<int, Item> DroppedItems = new Dictionary<int, Item>();
 
-        public MouseHandler m;
-        public MessageHandler Messages;
-
         public Texture2D wall;
         public Texture2D floor;
         public Texture2D player_texture;
@@ -180,184 +177,344 @@ namespace DungeonCrawler
 
         public void ChangeWeapons_Draw(Item i, SpriteBatch s)
         {
-            s.DrawString(arial, "Item to change to: Health Modifier = " + i.healthModifier + " Attack Modifier = " + i.attackModifier + " Block Modifier = " + i.blockModifier, new Vector2(100, 100), Color.White);
+            GraphicsDevice.Clear(Color.White);
+
+            s.DrawString(arial, "Item to change to: Health Modifier = " + i.healthModifier + " Attack Modifier = " + i.attackModifier + " Block Modifier = " + i.blockModifier, new Vector2(100, 100), Color.Black);
             s.Draw(i.Textures[0], new Rectangle(0, 100, 100, 100), i.color);
 
             switch (i.Type)
             {
                 case "head":
-                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[0].healthModifier + " Attack Modifier = " + player.Equiped[0].attackModifier + " Block Modifier = " + player.Equiped[0].blockModifier, new Vector2(100, 300), Color.White);
+                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[0].healthModifier + " Attack Modifier = " + player.Equiped[0].attackModifier + " Block Modifier = " + player.Equiped[0].blockModifier, new Vector2(100, 300), Color.Black);
                     s.Draw(player.Equiped[0].Textures[0], new Rectangle(0, 300, 100, 100), player.Equiped[0].color);
                     break;
                 case "body":
-                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[1].healthModifier + " Attack Modifier = " + player.Equiped[1].attackModifier + " Block Modifier = " + player.Equiped[1].blockModifier, new Vector2(100, 300), Color.White);
+                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[1].healthModifier + " Attack Modifier = " + player.Equiped[1].attackModifier + " Block Modifier = " + player.Equiped[1].blockModifier, new Vector2(100, 300), Color.Black);
                     s.Draw(player.Equiped[1].Textures[0], new Rectangle(0, 300, 100, 100), player.Equiped[1].color);
                     break;
                 case "legs":
-                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[2].healthModifier + " Attack Modifier = " + player.Equiped[2].attackModifier + " Block Modifier = " + player.Equiped[2].blockModifier, new Vector2(100, 300), Color.White);
+                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[2].healthModifier + " Attack Modifier = " + player.Equiped[2].attackModifier + " Block Modifier = " + player.Equiped[2].blockModifier, new Vector2(100, 300), Color.Black);
                     s.Draw(player.Equiped[2].Textures[0], new Rectangle(0, 300, 100, 100), player.Equiped[2].color);
                     break;
                 case "weapon":
-                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[3].healthModifier + " Attack Modifier = " + player.Equiped[3].attackModifier + " Block Modifier = " + player.Equiped[3].blockModifier, new Vector2(100, 300), Color.White);
+                    s.DrawString(arial, "Item being changed: Health Modifier = " + player.Equiped[3].healthModifier + " Attack Modifier = " + player.Equiped[3].attackModifier + " Block Modifier = " + player.Equiped[3].blockModifier, new Vector2(100, 300), Color.Black);
                     s.Draw(player.Equiped[3].Textures[0], new Rectangle(0, 300, 100, 100), player.Equiped[3].color);
                     break;
             }
         }
 
-        public Item randItem (Random r, Vector2 pos)
+        public Item randItem (Random r, Vector2 pos, string Type)
         {
-            Item i = new Item();
-
-            i.healthModifier = 0;
-            i.attackModifier = 0;
-            i.blockModifier = 0;
-
-            i.position = pos;
-
-            string rarity;
-
-            int num = r.Next(0,100);
-
-            if (num < 60)
+            if (Type == null)
             {
-                rarity = "common";
-            }
+                Item i = new Item();
 
-            else if (num < 90)
-            {
-                rarity = "rare";
+                i.healthModifier = 0;
+                i.attackModifier = 0;
+                i.blockModifier = 0;
+
+                i.position = pos;
+
+                string rarity;
+
+                int num = r.Next(0, 100);
+
+                if (num < 60)
+                {
+                    rarity = "common";
+                }
+
+                else if (num < 90)
+                {
+                    rarity = "rare";
+                }
+                else
+                {
+                    rarity = "legendary";
+                }
+
+                switch (rarity)
+                {
+                    case "common":
+                        int upgradePoints = 10;
+
+                        i.color = Color.Green;
+
+                        while (upgradePoints > 0)
+                        {
+                            int rndStat = r.Next(0, 3);
+                            switch (rndStat)
+                            {
+                                case 0:
+                                    int modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.healthModifier += modifierValue * floorNum;
+                                    break;
+                                case 1:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.attackModifier += modifierValue * floorNum;
+                                    break;
+                                case 2:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.blockModifier += modifierValue * floorNum;
+                                    break;
+                            }
+                        }
+                        break;
+
+                    case "rare":
+                        upgradePoints = 15;
+
+                        i.color = Color.Blue;
+
+                        while (upgradePoints > 0)
+                        {
+                            int rndStat = r.Next(0, 3);
+                            switch (rndStat)
+                            {
+                                case 0:
+                                    int modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.healthModifier += modifierValue * floorNum;
+                                    break;
+                                case 1:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.attackModifier += modifierValue * floorNum;
+                                    break;
+                                case 2:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.blockModifier += modifierValue * floorNum;
+                                    break;
+                            }
+                        }
+                        break;
+
+                    case "legendary":
+                        upgradePoints = 20;
+
+                        i.color = Color.Red;
+
+                        while (upgradePoints > 0)
+                        {
+                            int rndStat = r.Next(0, 3);
+                            switch (rndStat)
+                            {
+                                case 0:
+                                    int modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.healthModifier += modifierValue * floorNum;
+                                    break;
+                                case 1:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.attackModifier += modifierValue * floorNum;
+                                    break;
+                                case 2:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.blockModifier += modifierValue * floorNum;
+                                    break;
+                            }
+                        }
+                        break;
+                }
+                switch (r.Next(0, 4))
+                {
+                    case 0:
+                        i.Type = "legs";
+                        i.Textures = new Texture2D[4];
+                        i.Textures[0] = Content.Load<Texture2D>("front_legs");
+                        i.Textures[1] = Content.Load<Texture2D>("back_legs");
+                        i.Textures[2] = Content.Load<Texture2D>("left_legs");
+                        i.Textures[3] = Content.Load<Texture2D>("right_legs");
+                        break;
+                    case 1:
+                        i.Type = "body";
+                        i.Textures = new Texture2D[4];
+                        i.Textures[0] = Content.Load<Texture2D>("front_body");
+                        i.Textures[1] = Content.Load<Texture2D>("back_body");
+                        i.Textures[2] = Content.Load<Texture2D>("left_body");
+                        i.Textures[3] = Content.Load<Texture2D>("right_body");
+                        break;
+                    case 2:
+                        i.Type = "head";
+                        i.Textures = new Texture2D[4];
+                        i.Textures[0] = Content.Load<Texture2D>("front_head");
+                        i.Textures[1] = Content.Load<Texture2D>("back_head");
+                        i.Textures[2] = Content.Load<Texture2D>("left_head");
+                        i.Textures[3] = Content.Load<Texture2D>("right_head");
+                        break;
+                    case 3:
+                        i.Type = "weapon";
+                        i.Textures = new Texture2D[4];
+                        i.Textures[0] = Content.Load<Texture2D>("front_weapon");
+                        i.Textures[1] = Content.Load<Texture2D>("back_weapon");
+                        i.Textures[2] = Content.Load<Texture2D>("left_weapon");
+                        i.Textures[3] = Content.Load<Texture2D>("right_weapon");
+                        i.SAbilities = new SwordAbilitySet(attack, attack, attack);
+                        break;
+                }
+                return i;
             }
             else
             {
-                rarity = "legendary";
-            }
+                Item i = new Item();
 
-            switch (rarity)
-            {
-                case "common":
-                    int upgradePoints = 10;
+                i.healthModifier = 0;
+                i.attackModifier = 0;
+                i.blockModifier = 0;
 
-                    i.color = Color.Green;
+                i.position = pos;
 
-                    while (upgradePoints > 0)
-                    {
-                        int rndStat = r.Next(0,3);
-                        switch (rndStat)
+                string rarity;
+
+                int num = r.Next(0, 100);
+
+                if (num < 60)
+                {
+                    rarity = "common";
+                }
+
+                else if (num < 90)
+                {
+                    rarity = "rare";
+                }
+                else
+                {
+                    rarity = "legendary";
+                }
+
+                switch (rarity)
+                {
+                    case "common":
+                        int upgradePoints = 10;
+
+                        i.color = Color.Green;
+
+                        while (upgradePoints > 0)
                         {
-                            case 0:
-                                int modifierValue = r.Next(0, upgradePoints + 1);
-                                upgradePoints -= modifierValue;
-                                i.healthModifier += modifierValue * floorNum;
-                                break;
-                            case 1:
-                                modifierValue = r.Next(0, upgradePoints + 1);
-                                upgradePoints -= modifierValue;
-                                i.attackModifier += modifierValue * floorNum;
-                                break;
-                            case 2:
-                                modifierValue = r.Next(0, upgradePoints + 1);
-                                upgradePoints -= modifierValue;
-                                i.blockModifier += modifierValue * floorNum;
-                                break;
+                            int rndStat = r.Next(0, 3);
+                            switch (rndStat)
+                            {
+                                case 0:
+                                    int modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.healthModifier += modifierValue * floorNum;
+                                    break;
+                                case 1:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.attackModifier += modifierValue * floorNum;
+                                    break;
+                                case 2:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.blockModifier += modifierValue * floorNum;
+                                    break;
+                            }
                         }
-                    }
-                    break;
+                        break;
 
-                case "rare":
-                    upgradePoints = 15;
+                    case "rare":
+                        upgradePoints = 15;
 
-                    i.color = Color.Blue;
+                        i.color = Color.Blue;
 
-                    while (upgradePoints > 0)
-                    {
-                        int rndStat = r.Next(0, 3);
-                        switch (rndStat)
+                        while (upgradePoints > 0)
                         {
-                            case 0:
-                                int modifierValue = r.Next(0, upgradePoints + 1);
-                                upgradePoints -= modifierValue;
-                                i.healthModifier += modifierValue * floorNum;
-                                break;
-                            case 1:
-                                modifierValue = r.Next(0, upgradePoints + 1);
-                                upgradePoints -= modifierValue;
-                                i.attackModifier += modifierValue * floorNum;
-                                break;
-                            case 2:
-                                modifierValue = r.Next(0, upgradePoints + 1);
-                                upgradePoints -= modifierValue;
-                                i.blockModifier += modifierValue * floorNum;
-                                break;
+                            int rndStat = r.Next(0, 3);
+                            switch (rndStat)
+                            {
+                                case 0:
+                                    int modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.healthModifier += modifierValue * floorNum;
+                                    break;
+                                case 1:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.attackModifier += modifierValue * floorNum;
+                                    break;
+                                case 2:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.blockModifier += modifierValue * floorNum;
+                                    break;
+                            }
                         }
-                    }
-                    break;
+                        break;
 
-                case "legendary":
-                    upgradePoints = 20;
+                    case "legendary":
+                        upgradePoints = 20;
 
-                    i.color = Color.Red;
+                        i.color = Color.Red;
 
-                    while (upgradePoints > 0)
-                    {
-                        int rndStat = r.Next(0, 3);
-                        switch (rndStat)
+                        while (upgradePoints > 0)
                         {
-                            case 0:
-                                int modifierValue = r.Next(0, upgradePoints + 1);
-                                upgradePoints -= modifierValue;
-                                i.healthModifier += modifierValue * floorNum;
-                                break;
-                            case 1:
-                                modifierValue = r.Next(0, upgradePoints + 1);
-                                upgradePoints -= modifierValue;
-                                i.attackModifier += modifierValue * floorNum;
-                                break;
-                            case 2:
-                                modifierValue = r.Next(0, upgradePoints + 1);
-                                upgradePoints -= modifierValue;
-                                i.blockModifier += modifierValue * floorNum;
-                                break;
+                            int rndStat = r.Next(0, 3);
+                            switch (rndStat)
+                            {
+                                case 0:
+                                    int modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.healthModifier += modifierValue * floorNum;
+                                    break;
+                                case 1:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.attackModifier += modifierValue * floorNum;
+                                    break;
+                                case 2:
+                                    modifierValue = r.Next(0, upgradePoints + 1);
+                                    upgradePoints -= modifierValue;
+                                    i.blockModifier += modifierValue * floorNum;
+                                    break;
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
+                switch (Type)
+                {
+                    case "legs":
+                        i.Type = "legs";
+                        i.Textures = new Texture2D[4];
+                        i.Textures[0] = Content.Load<Texture2D>("front_legs");
+                        i.Textures[1] = Content.Load<Texture2D>("back_legs");
+                        i.Textures[2] = Content.Load<Texture2D>("left_legs");
+                        i.Textures[3] = Content.Load<Texture2D>("right_legs");
+                        break;
+                    case "body":
+                        i.Type = "body";
+                        i.Textures = new Texture2D[4];
+                        i.Textures[0] = Content.Load<Texture2D>("front_body");
+                        i.Textures[1] = Content.Load<Texture2D>("back_body");
+                        i.Textures[2] = Content.Load<Texture2D>("left_body");
+                        i.Textures[3] = Content.Load<Texture2D>("right_body");
+                        break;
+                    case "head":
+                        i.Type = "head";
+                        i.Textures = new Texture2D[4];
+                        i.Textures[0] = Content.Load<Texture2D>("front_head");
+                        i.Textures[1] = Content.Load<Texture2D>("back_head");
+                        i.Textures[2] = Content.Load<Texture2D>("left_head");
+                        i.Textures[3] = Content.Load<Texture2D>("right_head");
+                        break;
+                    case "weapon":
+                        i.Type = "weapon";
+                        i.Textures = new Texture2D[4];
+                        i.Textures[0] = Content.Load<Texture2D>("front_weapon");
+                        i.Textures[1] = Content.Load<Texture2D>("back_weapon");
+                        i.Textures[2] = Content.Load<Texture2D>("left_weapon");
+                        i.Textures[3] = Content.Load<Texture2D>("right_weapon");
+                        i.SAbilities = new SwordAbilitySet(attack, attack, attack);
+                        break;
+                }
+                return i;
             }
-            switch (r.Next(0, 4))
-            {
-                case 0:
-                    i.Type = "legs";
-                    i.Textures = new Texture2D[4];
-                    i.Textures[0] = Content.Load<Texture2D>("front_legs");
-                    i.Textures[1] = Content.Load<Texture2D>("back_legs");
-                    i.Textures[2] = Content.Load<Texture2D>("left_legs");
-                    i.Textures[3] = Content.Load<Texture2D>("right_legs");
-                    break;
-                case 1:
-                    i.Type = "body";
-                    i.Textures = new Texture2D[4];
-                    i.Textures[0] = Content.Load<Texture2D>("front_body");
-                    i.Textures[1] = Content.Load<Texture2D>("back_body");
-                    i.Textures[2] = Content.Load<Texture2D>("left_body");
-                    i.Textures[3] = Content.Load<Texture2D>("right_body");
-                    break;
-                case 2:
-                    i.Type = "head";
-                    i.Textures = new Texture2D[4];
-                    i.Textures[0] = Content.Load<Texture2D>("front_head");
-                    i.Textures[1] = Content.Load<Texture2D>("back_head");
-                    i.Textures[2] = Content.Load<Texture2D>("left_head");
-                    i.Textures[3] = Content.Load<Texture2D>("right_head");
-                    break;
-                case 3:
-                    i.Type = "weapon";
-                    i.Textures = new Texture2D[4];
-                    i.Textures[0] = Content.Load<Texture2D>("front_weapon");
-                    i.Textures[1] = Content.Load<Texture2D>("back_weapon");
-                    i.Textures[2] = Content.Load<Texture2D>("left_weapon");
-                    i.Textures[3] = Content.Load<Texture2D>("right_weapon");
-                    i.SAbilities = new SwordAbilitySet(attack, attack, attack);
-                    break;
-            }
-            return i;
         }
 
         /// <summary>
@@ -398,6 +555,19 @@ namespace DungeonCrawler
                 case "exit":
                     System.Environment.Exit(1);
                     break;
+
+                case "character_sheet":
+                    KeyboardState k = Keyboard.GetState();
+                    if (k.IsKeyDown(Keys.C) && player.Cpressed == false)
+                    {
+                        gameState = "inGame";
+                        player.Cpressed = true;
+                    }
+                    if (k.IsKeyUp(Keys.C))
+                    {
+                        player.Cpressed = false;
+                    }
+                    break;
                 case "init_game":
                     HPotions = new List<HealthPotion>();
                     GEnemies = new List<Enemy>();
@@ -420,8 +590,6 @@ namespace DungeonCrawler
 
                     fps = new FrameRateCounter();
 
-                    m = new MouseHandler();
-                    
                     foreach (HealthPotion i in HPotions)
                     {
                         if (!i.hasBeenConsumed)
@@ -445,14 +613,32 @@ namespace DungeonCrawler
 
                     for (int i = 0; i < floorNum * 3; i++)
                     {
-                        Enemy e = new Enemy(test.Wall_Grid, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), floorNum * 3, floorNum, 0, "common"),
-            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), floorNum * 3, floorNum, 0, "common"),
-            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), floorNum * 3, floorNum, 0, "common"),
-            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, floorNum * 5, 0, "sword", "common" ,new SwordAbilitySet(attack, attack, attack)));
+                        Enemy e = new Enemy(test.Wall_Grid, r);
+
+                        e.Equiped.Add(randItem(r, e.pos, "head"));
+                        e.Equiped.Add(randItem(r, e.pos, "body"));
+                        e.Equiped.Add(randItem(r, e.pos, "legs"));
+                        e.Equiped.Add(randItem(r, e.pos, "weapon"));
+
+                        e.UpdateStatistics();
+
+                        foreach (Item I in e.Equiped)
+                        {
+                            e.color = Color.Green;
+
+                            if (e.color == Color.Green && (I.color == Color.Blue || I.color == Color.Red))
+                            {
+                                e.color = I.color;
+                            }
+                            if (e.color == Color.Blue && I.color == Color.Red)
+                            {
+                                e.color = I.color;
+                            }
+                        }
+
                         GEnemies.Insert(i, e);
                     }
 
-                    Messages = new MessageHandler(new Vector2(player.pos.X * 32 + 150, player.pos.Y * 32 - 360));
                     gameState = "inGame";
                     break;
 
@@ -474,10 +660,29 @@ namespace DungeonCrawler
 
                     for (int i = 0; i < floorNum * 3; i++)
                     {
-                        Enemy e = new Enemy(test.Wall_Grid, r, new Item(Content.Load<Texture2D>("Front_Head"), Content.Load<Texture2D>("Back_Head"), Content.Load<Texture2D>("Left_Head"), Content.Load<Texture2D>("Right_Head"), floorNum * 3, floorNum, 0, "common"),
-            new Item(Content.Load<Texture2D>("Front_Body"), Content.Load<Texture2D>("Back_Body"), Content.Load<Texture2D>("Left_Body"), Content.Load<Texture2D>("Right_Body"), floorNum * 3, floorNum, 0, "common"),
-            new Item(Content.Load<Texture2D>("Front_Legs"), Content.Load<Texture2D>("Back_Legs"), Content.Load<Texture2D>("Left_Legs"), Content.Load<Texture2D>("Right_Legs"), floorNum * 3, floorNum, 0, "common"),
-            new Item(Content.Load<Texture2D>("Front_Weapon"), Content.Load<Texture2D>("Back_Weapon"), Content.Load<Texture2D>("Left_Weapon"), Content.Load<Texture2D>("Right_Weapon"), 0, floorNum * 5, 0, "sword", "common", new SwordAbilitySet(attack, attack, attack)));
+                        Enemy e = new Enemy(test.Wall_Grid, r);
+
+                        e.Equiped.Add(randItem(r, e.pos, "head"));
+                        e.Equiped.Add(randItem(r, e.pos, "body"));
+                        e.Equiped.Add(randItem(r, e.pos, "legs"));
+                        e.Equiped.Add(randItem(r, e.pos, "weapon"));
+
+                        e.UpdateStatistics();
+
+                        foreach (Item I in e.Equiped)
+                        {
+                            e.color = Color.Green;
+
+                            if (e.color == Color.Green && (I.color == Color.Blue || I.color == Color.Red))
+                            {
+                                e.color = I.color;
+                            }
+                            if (e.color == Color.Blue && I.color == Color.Red)
+                            {
+                                e.color = I.color;
+                            }
+                        }
+
                         GEnemies.Insert(i, e);
                     }
 
@@ -505,9 +710,8 @@ namespace DungeonCrawler
                         gameState = "GameOver";
                     }
 
-                    Messages.Update(new Vector2(player.pos.X * 32 + 150, player.pos.Y * 32 - 360));
 
-                    KeyboardState k = Keyboard.GetState();
+                    k = Keyboard.GetState();
 
                     coolDowns = "Skill 1: ";
 
@@ -550,8 +754,12 @@ namespace DungeonCrawler
                         player.Epressed = true;
                     }
 
+                    if (k.IsKeyDown(Keys.C) && player.Cpressed == false)
+                    {
+                        gameState = "character_sheet";
+                        player.Cpressed = true;
+                    }
 
-                    m.Update();
 
                     player.update(test, gameTime, this, out HasMoved, GEnemies, ref HPotions, attack, step, ref gameState, ref DroppedItems);
 
@@ -576,22 +784,22 @@ namespace DungeonCrawler
                     {
                         if (e.pos.X == player.pos.X + 1 && e.pos.Y == player.pos.Y && player.hasAttacked && !e.hasAttacked && e.isAlive)
                         {
-                            e.attack(player, ref Messages);
+                            e.attack(player);
                             e.hasAttacked = true;
                         }
                         else if (e.pos.X == player.pos.X - 1 && e.pos.Y == player.pos.Y && player.hasAttacked && !e.hasAttacked && e.isAlive)
                         {
-                            e.attack(player, ref Messages);
+                            e.attack(player);
                             e.hasAttacked = true;
                         }
                         else if (e.pos.X == player.pos.X && e.pos.Y == player.pos.Y + 1 && player.hasAttacked && !e.hasAttacked && e.isAlive)
                         {
-                            e.attack(player, ref Messages);
+                            e.attack(player);
                             e.hasAttacked = true;
                         }
                         else if (e.pos.X == player.pos.X && e.pos.Y == player.pos.Y - 1 && player.hasAttacked && !e.hasAttacked && e.isAlive)
                         {
-                            e.attack(player, ref Messages);
+                            e.attack(player);
                             e.hasAttacked = true;
                         }
 
@@ -611,7 +819,7 @@ namespace DungeonCrawler
                     fps.Update(gameTime);
                     break;
                 case "changeItem":
-                    ChangeWeapons_Update(DroppedItems[Convert.ToInt32(test.Item_Grid[(int)player.pos.X, (int)player.pos.Y].Substring(1,1))]);
+                    ChangeWeapons_Update(DroppedItems[Convert.ToInt32(test.Item_Grid[(int)player.pos.X, (int)player.pos.Y].Substring(1, 1))]);
                     break;
             }
             base.Update(gameTime);
@@ -626,6 +834,19 @@ namespace DungeonCrawler
             GraphicsDevice.Clear(Color.Black);
             switch (gameState)
             {
+                case "character_sheet":
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(player.Equiped[0].Textures[0], new Rectangle(50, 50, 200, 200), player.Equiped[0].color);
+                    spriteBatch.Draw(player.Equiped[1].Textures[0], new Rectangle(275, 50, 200, 200), player.Equiped[1].color);
+                    spriteBatch.Draw(player.Equiped[2].Textures[0], new Rectangle(50, 275, 200, 200), player.Equiped[2].color);
+                    spriteBatch.Draw(player.Equiped[3].Textures[0], new Rectangle(275, 275, 200, 200), player.Equiped[3].color);
+
+                    spriteBatch.DrawString(arial, "                  Head   Body  Legs  Weapon  Total", new Vector2(500, 50), Color.White);
+                    spriteBatch.DrawString(arial, "health Modifier:    " + player.Equiped[0].healthModifier + "     " + player.Equiped[1].healthModifier + "     " + player.Equiped[2].healthModifier + "      " + player.Equiped[3].healthModifier + "      " + player.Health, new Vector2(500, 150), Color.White);
+                    spriteBatch.DrawString(arial, "attack Modifier:    " + player.Equiped[0].attackModifier + "     " + player.Equiped[1].attackModifier + "     " + player.Equiped[2].attackModifier + "      " + player.Equiped[3].attackModifier + "      " + player.Attack, new Vector2(500, 250), Color.White);
+                    spriteBatch.DrawString(arial, "block Modifier:     " + player.Equiped[0].blockModifier + "     " + player.Equiped[1].blockModifier + "     " + player.Equiped[2].blockModifier + "      " + player.Equiped[3].blockModifier + "      " + player.Block, new Vector2(500, 350), Color.White);
+                    spriteBatch.End();
+                    break;
                 case "GameOver":
                     spriteBatch.Begin();
                     spriteBatch.Draw(Content.Load<Texture2D>("GameOver.png"), new Vector2(0, 0), Color.Red);
@@ -678,15 +899,12 @@ namespace DungeonCrawler
 
                     spriteBatch.DrawString(arial, "fps: " + fps.frameRate.ToString(), new Vector2(player.pos.X * 32 - 300, player.pos.Y * 32 - 160), Color.White);
                     spriteBatch.DrawString(arial, "health: " + player.Health, new Vector2(player.pos.X * 32 - 300, player.pos.Y * 32 + 160), Color.Red);
-                    spriteBatch.DrawString(arial, m.rect.X + " " + m.rect.Y, new Vector2(player.pos.X * 32 + 15, player.pos.Y * 32 + 15), Color.Red);
                     spriteBatch.DrawString(arial, success, new Vector2(player.pos.X * 32 + 15, player.pos.Y * 32 + 15), Color.Red);
                     spriteBatch.DrawString(arial, coolDowns, new Vector2(player.pos.X * 32 - 30, player.pos.Y * 32 + 150), Color.White);
 
                     spriteBatch.DrawString(arial, "Health Modifier " + player.Health, new Vector2(player.pos.X * 32 + 100, player.pos.Y * 32 - 160), Color.White);
-                    spriteBatch.DrawString(arial, "Block Modifier " + player.Block, new Vector2(player.pos.X * 32 + 100, player.pos.Y * 32 - 100), Color.White);
+                    spriteBatch.DrawString(arial, "Block Modifier " + player.Block, new Vector2(player.pos.X * 32 + 100, player.pos.Y * 32 - 120), Color.White);
                     spriteBatch.DrawString(arial, "Attack Modifier " + player.Attack, new Vector2(player.pos.X * 32 + 100, player.pos.Y * 32 - 140), Color.White);
-
-                    Messages.Draw(spriteBatch, arial);
 
                     spriteBatch.End();
                     // TODO: Add your drawing code here

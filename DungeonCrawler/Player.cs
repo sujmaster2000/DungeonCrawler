@@ -18,6 +18,7 @@ namespace DungeonCrawler
         bool Spressed = false;
         bool Wpressed = false;
         public bool Epressed = false;
+        public bool Cpressed = false;
         public bool OnePressed = false;
         public bool TwoPressed = false;
         public bool ThreePressed = false;
@@ -132,6 +133,10 @@ namespace DungeonCrawler
                 if (k.IsKeyUp(Keys.E))
                 {
                     Epressed = false;
+                }
+                if (k.IsKeyUp(Keys.C))
+                {
+                    Cpressed = false;
                 }
                 if (k.IsKeyUp(Keys.D1))
                 {
