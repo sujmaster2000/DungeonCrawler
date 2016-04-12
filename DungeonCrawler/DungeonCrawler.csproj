@@ -15,7 +15,7 @@
     <MonoGameContentBuilderExe>
     </MonoGameContentBuilderExe>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Users\sujaan\Documents\DungeonCrawler\</PublishUrl>
+    <PublishUrl>C:\Users\sujaan\Documents\DungeonCrawler\Installer\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -25,7 +25,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>3</ApplicationRevision>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -81,11 +82,11 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Button.cs" />
     <Compile Include="Camera.cs" />
+    <Compile Include="HiScores.cs" />
     <Compile Include="MainMenu.cs" />
+    <Compile Include="Score.cs" />
     <Compile Include="SwordAbilitySet.cs" />
-    <Compile Include="GUIHandler.cs" />
     <Compile Include="HealthPotion.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Floor.cs" />
@@ -121,6 +122,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Back_Weapon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Border.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\ButtonTexture.png">

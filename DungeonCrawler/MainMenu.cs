@@ -19,8 +19,11 @@ namespace DungeonCrawler
 
         bool WPressed;
         bool SPressed;
+        bool TPressed;
 
         int currOption = 0;
+
+        int tCount = 0;
 
         public MainMenu ()
         {
@@ -48,6 +51,13 @@ namespace DungeonCrawler
                 currOption += 1;
                 SPressed = true;
             }
+            
+            else if (Keyboard.GetState().IsKeyDown(Keys.T) && !TPressed)
+            {
+                tCount++;
+                TPressed = true;
+            }
+                 
 
             else if (Keyboard.GetState().IsKeyDown(Keys.Enter))
             {
@@ -75,6 +85,15 @@ namespace DungeonCrawler
             if (Keyboard.GetState().IsKeyUp(Keys.S))
             {
                 SPressed = false;
+            }
+            if (Keyboard.GetState().IsKeyUp(Keys.T))
+            {
+                TPressed = false;
+            }
+
+            if (tCount == 3)
+            {
+                GameState = "loading_test";
             }
         }
 

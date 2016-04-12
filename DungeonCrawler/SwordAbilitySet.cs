@@ -24,6 +24,10 @@ namespace DungeonCrawler
         public int Skill2_Cooldown = 0;
         public int Skill3_Cooldown = 0;
 
+        public float skill1_percentage;
+        public float skill2_percentage;
+        public float skill3_percentage;
+
         //Initizalizes the textures in the object
         public SwordAbilitySet(Texture2D icon1, Texture2D icon2, Texture2D icon3, Texture2D icon4)
         {
@@ -124,7 +128,7 @@ namespace DungeonCrawler
             }
             p.OnePressed = true;
             p.hasAttacked = true;
-
+            skill1_percentage = 1;
             Skill1_Soundeffect.Play();
         }
 
@@ -210,7 +214,7 @@ namespace DungeonCrawler
                 p.TwoPressed = true;
                 p.hasAttacked = true;
                 Skill2_Cooldown = 2;
-
+                skill2_percentage = 1;
                 Skill2_Soundeffect.Play();
             }
         }
@@ -239,7 +243,7 @@ namespace DungeonCrawler
                 p.ThreePressed = true;
                 p.hasAttacked = true;
                 Skill3_Cooldown = 5;
-
+                skill3_percentage = 1;
                 Skill3_Soundeffect.Play();
             }
         }
@@ -262,6 +266,10 @@ namespace DungeonCrawler
             {
                 p.hasAttacked = true;
             }
+
+            skill1_percentage = (float) Skill1_Cooldown / 1;
+            skill2_percentage = (float) Skill2_Cooldown / 2;
+            skill3_percentage = (float) Skill3_Cooldown / 5;
         }
     }
 }

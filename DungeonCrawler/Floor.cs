@@ -28,7 +28,57 @@ namespace DungeonCrawler
 
         //Generates a Maze with randomized krusukal's algorithm
 
-        public static void KrusukalLevel(out string[,] Maze, ref string[,] EntranceExit_Grid, ref string[,] HP_Grid, ref string[,] Item_Grid, int size, string seed)
+        public Floor()
+        {
+            EntranceExit_Grid = new string[20, 20];
+            HP_Grid = new string[20, 20];
+            Item_Grid = new string[20, 20];
+            Enemy_Grid = new string[20, 20];
+            Wall_Grid = new string[20, 20];
+
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    HP_Grid[j, i] = " ";
+                }
+            }
+
+
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    Item_Grid[j, i] = " ";
+                }
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    Wall_Grid[j, i] = " ";
+                }
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    EntranceExit_Grid[j, i] = " ";
+                }
+            }
+
+            for (int i = 0; i < 20; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    Enemy_Grid[j, i] = " ";
+                }
+            }
+        }
+
+        public static void KrusukalLevel(out string[,] Maze, ref string[,] EntranceExit_Grid, ref string[,] HP_Grid, ref string[,] Item_Grid, ref string[,] Enemy_Grid,int size, string seed)
         {
             if (size % 2 == 0)
             {
@@ -45,6 +95,7 @@ namespace DungeonCrawler
             EntranceExit_Grid = new string[Maze.GetLength(0), Maze.GetLength(1)];
             HP_Grid = new string[Maze.GetLength(0), Maze.GetLength(1)];
             Item_Grid = new string[Maze.GetLength(0), Maze.GetLength(1)];
+            Enemy_Grid = new string[Maze.GetLength(0), Maze.GetLength(1)];
 
             for (int i = 0; i < Maze.GetLength(0); i++)
             {
@@ -69,6 +120,14 @@ namespace DungeonCrawler
                 for (int j = 0; j < Maze.GetLength(1); j++)
                 {
                     EntranceExit_Grid[j, i] = " ";
+                }
+            }
+
+            for (int i = 0; i < Maze.GetLength(0); i++)
+            {
+                for (int j = 0; j < Maze.GetLength(1); j++)
+                {
+                    Enemy_Grid[j, i] = " ";
                 }
             }
 
@@ -647,11 +706,7 @@ namespace DungeonCrawler
 
         public Floor(int Size, string Seed)
         {
-            KrusukalLevel(out Wall_Grid, ref EntranceExit_Grid, ref HP_Grid, ref Item_Grid, Size, Seed);
-        }
-        
-        public Floor()
-        { 
+            KrusukalLevel(out Wall_Grid, ref EntranceExit_Grid, ref HP_Grid, ref Item_Grid, ref Enemy_Grid, Size, Seed);
         }
 
         //Draws the level onto the screen

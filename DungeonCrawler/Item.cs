@@ -20,6 +20,8 @@ namespace DungeonCrawler
         public int attackModifier;
         public double blockModifier;
 
+        public int FloorNum;
+
         public Vector2 position;
 
         public string Type;

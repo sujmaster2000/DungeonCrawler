@@ -24,6 +24,7 @@ namespace DungeonCrawler
         public bool isAlive = true;
         public bool hasAttacked = false;
         public bool hasDroppedItem = false;
+        public bool isActive = true;
 
         public List<Item> Equiped = new List<Item>();
         public List<doubleInt> path = new List<doubleInt>();
@@ -38,7 +39,7 @@ namespace DungeonCrawler
 
         public string State = "passive";
 
-        public Enemy (Vector2 Pos, Item Head, Item Body, Item Legs, Item Weapon)
+        public Enemy (Vector2 Pos, Item Head, Item Body, Item Legs, Item Weapon, bool IsActive)
         {
             pos = Pos;
             rect = new Rectangle(Convert.ToInt32(pos.X * 32), Convert.ToInt32(pos.Y * 32), 32, 32);
@@ -52,6 +53,8 @@ namespace DungeonCrawler
             Equiped.Add(Body);
             Equiped.Add(Legs);
             Equiped.Add(Weapon);
+
+            isActive = IsActive;
         }
 
         public Enemy(string[,] Maze, Random r)
@@ -73,15 +76,15 @@ namespace DungeonCrawler
             rect = new Rectangle(Convert.ToInt32(pos.X * 32), Convert.ToInt32(pos.Y * 32), 32, 32);
         }
 
-        public void UpdateStatistics()
+        public void UpdateStatistics(int floorNum)
         {
-            health = 20 + (Equiped[0].healthModifier + Equiped[1].healthModifier + Equiped[2].healthModifier + Equiped[3].healthModifier);
+            health = 20 * floorNum + (Equiped[0].healthModifier + Equiped[1].healthModifier + Equiped[2].healthModifier + Equiped[3].healthModifier);
             maxHealth = health;
             attackDamage = Equiped[0].attackModifier + Equiped[1].attackModifier + Equiped[2].attackModifier + Equiped[3].attackModifier;
             block = Equiped[0].blockModifier + Equiped[1].blockModifier + Equiped[2].blockModifier + Equiped[3].blockModifier;
         }
 
-        public Enemy(string[,] Maze, Random r, Item Head, Item Body, Item Legs, Item Weapon)
+        public Enemy(string[,] Maze, Random r, Item Head, Item Body, Item Legs, Item Weapon, int floorNum)
         {
             bool validPos = false;
 
@@ -98,7 +101,7 @@ namespace DungeonCrawler
 
             rect = new Rectangle(Convert.ToInt32(pos.X * 32), Convert.ToInt32(pos.Y * 32), 32, 32);
 
-            health = 20 + (Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier);
+            health = 20 * (floorNum - 1) + (Head.healthModifier + Body.healthModifier + Legs.healthModifier + Weapon.healthModifier);
             maxHealth = health;
             attackDamage = Head.attackModifier + Body.attackModifier + Legs.attackModifier + Weapon.attackModifier;
             block = Head.blockModifier + Body.blockModifier + Legs.blockModifier + Weapon.blockModifier;
@@ -238,9 +241,22 @@ namespace DungeonCrawler
         {
             if (health <=0 && hasDroppedItem == false)
             {
+                if (color == Color.Green)
+                {
+                    g.score.EnemyScore += g.floorNum;
+                }
+                else if (color == Color.Blue)
+                {
+                    g.score.EnemyScore += g.floorNum * 2;
+                }
+                else if (color == Color.Red)
+                {
+                    g.score.EnemyScore += g.floorNum * 4;
+                }
+
                 isAlive = false;
                 health = 0;
-                if (r.Next(0, 100) < 35 && Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == " ")
+                if (r.Next(0, 100) < 100 && Maze.Item_Grid[Convert.ToInt32(pos.X), Convert.ToInt32(pos.Y)] == " ")
                 {
                     Item item = g.randItem(r, pos, null);
                     droppedItems.Add(droppedItems.Count, item);
@@ -252,10 +268,11 @@ namespace DungeonCrawler
                 hasDroppedItem = true;
             }
 
-            if (isAlive == true)
+            if (isAlive == true && isActive == true)
             {
                 switch (State)
                 {
+
                     case "passive":
 
                         if (pos.X < p.pos.X + 4 && pos.X > p.pos.X - 4 && pos.Y < p.pos.Y + 4 && pos.Y > p.pos.Y - 4)
@@ -266,17 +283,18 @@ namespace DungeonCrawler
 
                         break;
                     case "investigating":
+                        if (Maze.Enemy_Grid[path[path.Count - 1].x, path[path.Count - 1].x] == " ")
+                        {
+                            prevPos.Y = pos.Y;
+                            prevPos.X = pos.X;
 
-                        prevPos.Y = pos.Y;
-                        prevPos.X = pos.X;
+                            rect.X = path[path.Count - 1].x * 32;
+                            rect.Y = path[path.Count - 1].y * 32;
+                            pos.X = path[path.Count - 1].x;
+                            pos.Y = path[path.Count - 1].y;
 
-                        rect.X = path[path.Count - 1].x * 32;
-                        rect.Y = path[path.Count - 1].y * 32;
-                        pos.X = path[path.Count - 1].x;
-                        pos.Y = path[path.Count - 1].y;
-
-                        path.RemoveAt(path.Count - 1);
-
+                            path.RemoveAt(path.Count - 1);
+                        }
                         if (path.Count == 0)
                         {
                             State = "passive";
@@ -291,7 +309,7 @@ namespace DungeonCrawler
                     case "active":
                         path = getPath(Maze, p.pos);
 
-                        if (path.Count != 1 && Maze.Wall_Grid[Convert.ToInt32(path[path.Count - 1].x), Convert.ToInt32(path[path.Count - 1].y)] != "e")
+                        if (path.Count != 1 && Maze.Enemy_Grid[Convert.ToInt32(path[path.Count - 1].x), Convert.ToInt32(path[path.Count - 1].y)] != "e")
                         {
                             prevPos.Y = pos.Y;
                             prevPos.X = pos.X;

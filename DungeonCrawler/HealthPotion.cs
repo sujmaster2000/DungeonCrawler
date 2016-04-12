@@ -11,7 +11,7 @@ namespace DungeonCrawler
     {
         public bool hasBeenConsumed = false;
         public Vector2 pos;
-        Rectangle rect;
+        public Rectangle rect;
 
         public HealthPotion()
         {
